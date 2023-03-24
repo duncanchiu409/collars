@@ -1,1 +1,10 @@
-<p>sign-in works!</p>
+<div class="formGroup">
+    <input type="text" class="formControl" placeholder="Username" #userName required>
+</div>
+<div class="formGroup">
+    <input type="password" class="formControl" placeholder="Password" #userPassword required>
+</div>
+<!-- Calling SignIn Api from AuthService -->
+<div class="formGroup">
+    <input type="button" class="btn btnPrimary" value="Log in" (click)="authService.SignIn(userName.value, userPassword.value)">
+</div>
