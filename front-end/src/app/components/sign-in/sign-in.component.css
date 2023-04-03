@@ -1,0 +1,38 @@
+.container{
+    position: absolute;
+    margin: 0%;
+    padding: 0%;
+    width: auto;
+    height: auto;
+}
+
+img{
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+}
+
+.form{
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    width: 27.5%;
+    height: 60%;
+}
+
+input{
+    display: inline;
+    width: 100%;
+}
+
+label{
+    margin-top: 10%;
+}
+
+.button{
+    margin-top: 10%;
+}

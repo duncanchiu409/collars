@@ -58,6 +58,7 @@ export class AuthService {
       .createUserWithEmailAndPassword(email, password)
       .then((result) => {
         this.SetUserData(result.user);
+        this.router.navigate(['challenges'])
       })
       .catch((error) => {
         window.alert(error.message);
@@ -95,7 +96,7 @@ export class AuthService {
     if(userString === null){
       return false
     }
-    
+
     return true;
   }
 }
