@@ -16,13 +16,15 @@ import { environment } from '../environments/environment';
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { ChallengesComponent } from './components/challenges/challenges.component';
+import { DogInfoComponent } from './components/dog-info/dog-info.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SignInComponent,
     SignUpComponent,
-    ChallengesComponent
+    ChallengesComponent,
+    DogInfoComponent
   ],
   imports: [
     BrowserModule,

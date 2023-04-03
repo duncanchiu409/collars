@@ -45,6 +45,6 @@ label{
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
     color: #00ff00;
-    opacity: 1; /* Firefox */
+    opacity: 0.5; /* Firefox */
   }
   

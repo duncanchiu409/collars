@@ -43,6 +43,10 @@ export class AuthService {
         this.SetUserData(result.user);
         this.afAuth.authState.subscribe((user) => {
           if (user) {
+            console.log(user)
+            if (user === undefined){
+              this.router.navigate(['dog-info'])
+            }
             this.router.navigate(['challenges']);
           }
         });
@@ -58,7 +62,7 @@ export class AuthService {
       .createUserWithEmailAndPassword(email, password)
       .then((result) => {
         this.SetUserData(result.user);
-        this.router.navigate(['challenges'])
+        this.router.navigate(['dog-info'])
       })
       .catch((error) => {
         window.alert(error.message);
@@ -108,9 +112,19 @@ export class AuthService {
     }
 
     const user = JSON.parse(userString)
-    if(user.dogID === "" || user.dogID === undefined){
-      return false
-    }
+    const userRef = this.afs.doc(`users/${user.uid}`);
+    const result = userRef.get()
+    
+    result.forEach((res) => {
+      let user :any = res.data()
+    
+      if(user.dogID === undefined || user.dogID === ""){
+        return false
+      }
+      else{
+        return true
+      }
+    })
 
     return true
   }
