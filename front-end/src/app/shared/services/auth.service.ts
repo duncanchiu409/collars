@@ -99,4 +99,19 @@ export class AuthService {
 
     return true;
   }
+
+  get withDogInfo(): boolean {
+    const userString = localStorage.getItem('user')
+
+    if(userString === null){
+      return false
+    }
+
+    const user = JSON.parse(userString)
+    if(user.dogID === "" || user.dogID === undefined){
+      return false
+    }
+
+    return true
+  }
 }
