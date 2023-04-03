@@ -1,26 +1,38 @@
-<div class="formGroup">
-  <input
-    type="email"
-    class="formControl"
-    placeholder="Email Address"
-    #userEmail
-    required
-  />
-</div>
-<div class="formGroup">
-  <input
-    type="password"
-    class="formControl"
-    placeholder="Password"
-    #userPwd
-    required
-  />
-</div>
-<div class="formGroup">
-  <input
-    type="button"
-    class="btn btnPrimary"
-    value="Sign Up"
-    (click)="authService.SignUp(userEmail.value, userPwd.value)"
-  />
+<div class="container">
+  <img src="../../../assets/dog_splash.jpg" alt="Dog hanging tongue on car window"/>
+  <div class="form">
+    <label>username</label>
+    <input type="text" placeholder="TYPE HERE" #userName required/>
+    <label>email</label>
+    <input
+      type="email"
+      class="formControl"
+      placeholder="TYPE HERE"
+      #userEmail
+      required
+    />
+    <label>password</label>
+    <input
+      type="password"
+      placeholder="TYPE HERE"
+      [(ngModel)]="password"
+      #userPwd
+      required
+    />
+    <label>confirm password</label>
+    <input
+      type="password"
+      placeholder="TYPE HERE"
+      [(ngModel)]="confirmPassword"
+      [style.border-color]="validate() ? 'black' : 'red'"
+      #userPwd
+      required
+    />
+    <input
+      type="button"
+      class="button"
+      value="Sign Up"
+      (click)="authService.SignUp(userName.value, userEmail.value, userPwd.value)"
+    />
+  </div>
 </div>
