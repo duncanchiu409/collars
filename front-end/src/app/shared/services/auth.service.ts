@@ -43,7 +43,7 @@ export class AuthService {
         this.SetUserData(result.user);
         this.afAuth.authState.subscribe((user) => {
           if (user) {
-            this.router.navigate(['dashboard']);
+            this.router.navigate(['challenges']);
           }
         });
       })
@@ -86,5 +86,16 @@ export class AuthService {
       localStorage.removeItem('user');
       this.router.navigate(['sign-in']);
     });
+  }
+
+  // Returns true when user is looged in and email is verified
+  get isLoggedIn(): boolean {
+    const userString = localStorage.getItem('user')
+
+    if(userString === null){
+      return false
+    }
+    
+    return true;
   }
 }
