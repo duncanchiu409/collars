@@ -13,7 +13,7 @@ export class DogGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if(this.authService.withDogInfo){
+    if(!this.authService.withDogInfo){
       this.router.navigate(['dog-info'])
     }
     return true;

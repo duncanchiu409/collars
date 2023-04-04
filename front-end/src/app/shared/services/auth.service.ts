@@ -40,7 +40,6 @@ export class AuthService {
     return this.afAuth
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
-        this.SetUserData(result.user);
         this.afAuth.authState.subscribe((user) => {
           if (user) {
             console.log(user)
@@ -61,7 +60,7 @@ export class AuthService {
     return this.afAuth
       .createUserWithEmailAndPassword(email, password)
       .then((result) => {
-        this.SetUserData(result.user);
+        this.SetUserData(result.user, username);
         this.router.navigate(['dog-info'])
       })
       .catch((error) => {
@@ -72,13 +71,14 @@ export class AuthService {
   /* Setting up user data when sign in with username/password, 
   sign up with username/password and sign in with social auth  
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
-  SetUserData(user: any) {
+  SetUserData(user: any, username? :string) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
       `users/${user.uid}`
     );
     const userData: User = {
       uid: user.uid,
       email: user.email,
+      username: username
     };
     return userRef.set(userData, {
       merge: true,
@@ -115,17 +115,21 @@ export class AuthService {
     const userRef = this.afs.doc(`users/${user.uid}`);
     const result = userRef.get()
     
+    let user_snapshot :any[] = []
     result.forEach((res) => {
-      let user :any = res.data()
-    
-      if(user.dogID === undefined || user.dogID === ""){
-        return false
-      }
-      else{
-        return true
-      }
+      let res_snapshot = res.data()
+      console.log(res_snapshot)
+      user_snapshot.push(res_snapshot)
     })
 
-    return true
+    if(user_snapshot.length !== 1){
+      return false
+    }
+    else{
+      if(user_snapshot[0].dogid === undefined){
+        return false
+      }
+      return true
+    }
   }
 }
