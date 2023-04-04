@@ -18,6 +18,7 @@ import { SignInComponent } from './components/sign-in/sign-in.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { ChallengesComponent } from './components/challenges/challenges.component';
 import { DogInfoComponent } from './components/dog-info/dog-info.component';
+import { WelcomeComponent } from './components/welcome/welcome.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { DogInfoComponent } from './components/dog-info/dog-info.component';
     SignInComponent,
     SignUpComponent,
     ChallengesComponent,
-    DogInfoComponent
+    DogInfoComponent,
+    WelcomeComponent
   ],
   imports: [
     BrowserModule,

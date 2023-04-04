@@ -4,13 +4,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { ChallengesComponent } from './components/challenges/challenges.component';
+import { WelcomeComponent } from './components/welcome/welcome.component'
 
 import { AuthGuard } from './shared/guard/auth.guard';
 import { DogGuard } from './shared/guard/dog.guard';
 import { DogInfoComponent } from './components/dog-info/dog-info.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
+  { path: '', redirectTo: '/welcome', pathMatch: 'full' },
+  { path: 'welcome', component: WelcomeComponent},
   { path: 'sign-in', component: SignInComponent },
   { path: 'register-user', component: SignUpComponent },
   { path: 'challenges', component: ChallengesComponent, canActivate: [DogGuard] },
