@@ -1,1 +1,20 @@
-<p>dog-info works!</p>
+<div class="body">
+    <nav style="text-align: center;"><h1>DOGGY INFO</h1></nav>
+    <hr>
+
+    <div class="form">
+        <div class="form_container">
+            <label>Your dog's name</label>
+            <input type="text" placeholder="TYPE HERE" [(ngModel)]="dogName"/>
+        </div>
+        <div class="form_container" *ngIf="dogNameStatus">
+            <label>{{dogName}}'s breed</label>
+            <input type="text" placeholder="TYPE HERE" [(ngModel)]="dogBreed"/>
+        </div>
+        <div class="form_container" *ngIf="dogBreedStatus">
+            <label>{{dogName}}'s teritory</label>
+            <input type="text" placeholder="TYPE HERE" [(ngModel)]="dogTeritory"/>
+        </div>
+        <button (click)="onDone()">DONE</button>
+    </div>
+</div>
