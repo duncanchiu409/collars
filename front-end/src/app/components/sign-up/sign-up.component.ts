@@ -20,8 +20,13 @@ export class SignUpComponent implements OnInit {
 
   validate() :boolean{
     if(this.password !== this.confirmPassword){
-      this.message='Mis-match password'
-      return false
+      if(this.confirmPassword === ""){
+        return true
+      }
+      else{
+        this.message='Mis-match password'
+        return false
+      }
     }
     else{
       this.message=''
@@ -29,4 +34,20 @@ export class SignUpComponent implements OnInit {
     }
   }
 
+  signup(userName :string, userEmail :string, password :string){
+    if(userName === ""){
+      window.alert("Please input username")
+    }
+    else if(this.validate() === true){
+      if(this.confirmPassword === ""){
+        window.alert("Please input matching password")
+      }
+      else{
+        this.authService.SignUp(userName,userEmail,password)
+      }
+    }
+    else{
+      window.alert("Please input matching password")
+    }
+  }
 }
