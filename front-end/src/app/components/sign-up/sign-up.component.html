@@ -20,12 +20,13 @@
       required
     />
     <label>confirm password</label>
+    <div *ngIf="message"><span style="color: red;">{{ message }}</span></div>
     <input
       type="password"
+      class="validate"
       placeholder="TYPE HERE"
       [(ngModel)]="confirmPassword"
-      [style.border-color]="validate() ? 'black' : 'red'"
-      #userPwd
+      [class.validate]="!validate()"
       required
     />
     <input
@@ -34,5 +35,11 @@
       value="Sign Up"
       (click)="authService.SignUp(userName.value, userEmail.value, userPwd.value)"
     />
+    <!-- <input
+      type="button"
+      class="button"
+      value="Facebook Sign Up"
+      (click)="authService.FacebookAuth()"
+    /> -->
   </div>
 </div>

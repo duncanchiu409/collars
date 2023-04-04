@@ -45,6 +45,11 @@ label{
     background-color: #f3ef00;
 }
 
+.validate{
+    border: solid;
+    border-color: red;
+}
+
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
     color: #00ff00;
     opacity: 0.5; /* Firefox */

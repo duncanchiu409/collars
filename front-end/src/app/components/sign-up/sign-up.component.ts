@@ -9,7 +9,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 export class SignUpComponent implements OnInit {
   public password :string = ""
   public confirmPassword :string = ""
-  public validation :boolean = false
+  public message :string = ""
 
   constructor(public authService: AuthService) { 
 
@@ -20,9 +20,11 @@ export class SignUpComponent implements OnInit {
 
   validate() :boolean{
     if(this.password !== this.confirmPassword){
+      this.message='Mis-match password'
       return false
     }
     else{
+      this.message=''
       return true
     }
   }
