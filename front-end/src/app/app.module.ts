@@ -4,8 +4,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AuthService } from "./shared/services/auth.service";
+import { ChallengeService } from "./shared/services/challenge.service"
 
 // Firebase services + environment module
 import { AngularFireModule } from '@angular/fire/compat';
@@ -37,9 +39,10 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
     AngularFireStorageModule,
     AngularFireDatabaseModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
-  providers: [AuthService],
+  providers: [AuthService, ChallengeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
