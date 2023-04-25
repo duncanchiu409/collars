@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 
-import { User } from './user';
+import { User } from '../interfaces/user';
 
 import { FacebookAuthProvider } from 'firebase/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';

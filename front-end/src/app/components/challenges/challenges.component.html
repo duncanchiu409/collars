@@ -1,1 +1,7 @@
-<p>challenges works!</p>
+<div *ngFor="let challenge of challengeService.challenges">
+    <h1>{{ challenge.title }}</h1>
+    <img src="{{ challenge.imageURI }}"/>
+    <p>{{ challenge.descripton }}</p>
+    <p>{{ challenge.timer }}</p>
+</div>
+<button (click)="challengeService.getChallenges()">refresh</button>
