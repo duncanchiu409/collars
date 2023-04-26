@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'welcome', component: WelcomeComponent},
   { path: 'sign-in', component: SignInComponent },
   { path: 'register-user', component: SignUpComponent },
-  { path: 'challenges', component: ChallengesComponent },
+  { path: 'challenges', component: ChallengesComponent, canActivate:[AuthGuard, DogGuard] },
   { path: 'dog-info', component: DogInfoComponent, canActivate:[AuthGuard]}
 ];
 

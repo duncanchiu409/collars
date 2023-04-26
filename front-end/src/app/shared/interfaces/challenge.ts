@@ -1,4 +1,5 @@
 export interface Challenge{
+    uid: string,
     title: string,
     description: string,
     imageURI: string,
