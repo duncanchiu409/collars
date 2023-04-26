@@ -1,6 +1,6 @@
 export interface Challenge{
     title: string,
-    descripton: string,
+    description: string,
     imageURI: string,
     entriesCounter: number,
     timer: Date,

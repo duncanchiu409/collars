@@ -7,9 +7,9 @@ import { ChallengeService } from 'src/app/shared/services/challenge.service';
   styleUrls: ['./challenges.component.css']
 })
 export class ChallengesComponent implements OnInit {
-
   constructor(public challengeService :ChallengeService) { }
 
   ngOnInit(): void {
+
   }
 }
