@@ -8,6 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AuthService } from "./shared/services/auth.service";
 import { ChallengeService } from "./shared/services/challenge.service"
+import { DogService } from "./shared/services/dog.service"
 
 // Firebase services + environment module
 import { AngularFireModule } from '@angular/fire/compat';
@@ -42,7 +43,7 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
     FormsModule,
     HttpClientModule
   ],
-  providers: [AuthService, ChallengeService],
+  providers: [AuthService, ChallengeService, DogService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
