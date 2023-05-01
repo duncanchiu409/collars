@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
+import { throwError } from 'rxjs';
+import { DogService } from 'src/app/shared/services/dog.service';
+import { PassThrough } from 'stream';
 
 @Component({
   selector: 'app-dog-info',
@@ -15,7 +18,7 @@ export class DogInfoComponent implements OnInit {
   public dogTeritory :string = ''
   public dogTeritoryStatus :boolean = false;
 
-  constructor (public router :Router) { }
+  constructor (public router :Router, private dogSevice :DogService) { }
 
   ngOnInit(): void {
   }
@@ -50,8 +53,30 @@ export class DogInfoComponent implements OnInit {
         this.router.navigate(['/'])
       }
       else{
-        console.log(this.dogName,this.dogBreed,this.dogTeritory)
+        this.addDog()
       }
+    }
+  }
+
+  addDog(){
+    let user = localStorage.getItem("user")
+
+    let dog = { 
+      uid: "",
+      dogName: this.dogName,
+      dogBreed: this.dogBreed,
+      dogTeritory: this.dogTeritory,
+      dogImageURI: "",
+      userId: "4tpIZ6ZBVyfHDTe6owqdLaVx9BN2"
+    }
+
+    if(user == null){
+      console.log("Unable to grab Sign-in User")
+    }
+    else{
+      // dog.userId = JSON.parse(user).uid
+      this.dogSevice.addDogInfo(dog).subscribe()
+      // this.router.navigate(["/challenges"])
     }
   }
 }

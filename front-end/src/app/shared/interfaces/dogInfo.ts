@@ -4,4 +4,5 @@ export interface DogInfo{
     dogBreed: string;
     dogTeritory: string;
     dogImageURI: string;
+    userId: string;
 }
