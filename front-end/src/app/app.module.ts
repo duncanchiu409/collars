@@ -22,6 +22,7 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { ChallengesComponent } from './components/challenges/challenges.component';
 import { DogInfoComponent } from './components/dog-info/dog-info.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
+import { ForgetPasswordComponent } from './components/forget-password/forget-password.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
     SignUpComponent,
     ChallengesComponent,
     DogInfoComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    ForgetPasswordComponent
   ],
   imports: [
     BrowserModule,
