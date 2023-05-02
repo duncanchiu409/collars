@@ -6,6 +6,6 @@
         <label>Password</label>
         <input type="password" placeholder="TYPE HERE" #userPassword required>
         <input type="button" value="Log in" (click)="authService.SignIn(userName.value, userPassword.value)" class="button">
-        <button (click)='authService.ResetPassword("chiuduncan409@gmail.com")'>ResetPassword</button>
+        <a routerLink="/forget-password">ResetPassword</a>
     </div>
 </div>

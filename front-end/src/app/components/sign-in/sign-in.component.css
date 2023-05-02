@@ -44,11 +44,8 @@ label{
     margin-top: 10%;
 }
 
-button{
+a{
     color: orange;
-    text-decoration: underline;
-    border: none;
-    background-color: white;
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
