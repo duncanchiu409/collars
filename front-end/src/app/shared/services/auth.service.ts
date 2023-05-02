@@ -109,6 +109,15 @@ export class AuthService {
       });
   }
 
+  ResetPassword(email :string){
+    return this.afAuth
+      .sendPasswordResetEmail(email).then(
+        () => {this.router.navigate(['sign-in'])}
+      ).catch(
+        (error) => console.log(error)
+      )
+  }
+
   // Returns true when user is looged in and email is verified
   get isLoggedIn(): boolean {
     const userString = localStorage.getItem('user')

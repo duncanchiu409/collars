@@ -1,25 +1,32 @@
 .wrapper{
     display: grid;
-    grid-template-columns: repeat(4, 1fr)
+    grid-template-columns: repeat(4, 1fr);
 }
 
 .challenge{
-    width: 300px;
-    height: 300px;
+    display: inline-block;
     margin: 10%;
+    padding: 10%;
+    border-style: solid;
+    border-color: black;
+    border-radius: 20px;
 }
 
 ul{
     list-style-type: none;
-    padding: 0;
     margin: 0;
     text-align: center;
 }
 
 li{
+    text-align: center;
     display: inline;
-    padding: 14px 16px;
+    padding: 0 16px;
     color: aqua;
     font-weight: bold;
-    font-size: larger;
+    font-size: x-large;
+}
+
+nav{
+    margin-top: 14px;
 }

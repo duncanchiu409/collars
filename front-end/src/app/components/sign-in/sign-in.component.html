@@ -1,10 +1,11 @@
 <div class="container">
-    <img src="../../../assets/dog_splash.jpg" alt="Dog hanging tongue on car window"/>
+    <img src="../../../assets/546539.jpg" alt="Dog hanging tongue on car window"/>
     <div class="form">
         <label>Email</label>
         <input type="text" placeholder="TYPE HERE" #userName required>
         <label>Password</label>
         <input type="password" placeholder="TYPE HERE" #userPassword required>
         <input type="button" value="Log in" (click)="authService.SignIn(userName.value, userPassword.value)" class="button">
+        <button (click)='authService.ResetPassword("chiuduncan409@gmail.com")'>ResetPassword</button>
     </div>
 </div>
