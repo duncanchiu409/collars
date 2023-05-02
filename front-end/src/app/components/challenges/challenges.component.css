@@ -22,11 +22,20 @@ li{
     text-align: center;
     display: inline;
     padding: 0 16px;
+}
+
+button{
     color: aqua;
     font-weight: bold;
     font-size: x-large;
+    border: none;
+    background-color: white;
 }
 
 nav{
     margin-top: 14px;
+}
+
+img{
+    width: 100%;
 }
