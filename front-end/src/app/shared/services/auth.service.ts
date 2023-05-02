@@ -113,8 +113,6 @@ export class AuthService {
     return this.afAuth
       .sendPasswordResetEmail(email).then(
         () => {this.router.navigate(['sign-in'])}
-      ).catch(
-        (error) => console.log(error)
       )
   }
 
