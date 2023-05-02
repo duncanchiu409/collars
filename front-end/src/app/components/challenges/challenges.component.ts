@@ -9,17 +9,23 @@ import { ChallengeService } from 'src/app/shared/services/challenge.service';
 })
 export class ChallengesComponent implements OnInit {
   public challenges :Challenge[] = []
+  public showingChallenges :Challenge[] = []
+  public sortingLogic :string = 'upcoming'
 
-  constructor(public challengeService :ChallengeService) {
-    this.challenges = [...this.challengeService.challenges]
-  }
+  constructor(public challengeService :ChallengeService) {}
 
   ngOnInit(): void {
-    this.challenges = [...this.challengeService.challenges]
+    this.challengeService.getChallenges().subscribe(
+      (challenges :Challenge[]) => {
+        this.challenges = [... challenges]
+        this.sortUpComing()
+      }
+    )
   }
 
   sortUpComing() :void{
-    this.challenges = this.challengeService.challenges.filter((challenge :Challenge) => {
+    this.sortingLogic = 'upcoming'
+    this.showingChallenges = this.challenges.filter((challenge :Challenge) => {
       if((new Date(challenge.timer).getTime() - new Date().getTime()) >= 0){
         return true
       }
@@ -30,7 +36,8 @@ export class ChallengesComponent implements OnInit {
   }
 
   sortActive() :void{
-    this.challenges = this.challengeService.challenges.filter((challenge :Challenge) => {
+    this.sortingLogic = 'active'
+    this.showingChallenges = this.challenges.filter((challenge :Challenge) => {
       if(!((new Date(challenge.timer).getTime() - new Date().getTime()) >= 0)){
         return true
       }
@@ -39,4 +46,5 @@ export class ChallengesComponent implements OnInit {
       }
     })
   }
+
 }

@@ -1,12 +1,12 @@
 <nav style="height: 50px">
     <ul>
-        <li><button (click)="sortUpComing()">UPCOMING</button></li>
-        <li><button>COMPLETED</button></li>
-        <li><button (click)="sortActive()">ACTIVE</button></li>
+        <li ><button [class.active]="sortingLogic === 'upcoming'" (click)="sortUpComing()">UPCOMING</button></li>
+        <li><button [class.active]="sortingLogic == 'completed'">COMPLETED</button></li>
+        <li><button [class.active]="sortingLogic == 'active'" (click)="sortActive()">ACTIVE</button></li>
     </ul>
 </nav>
 <div class="wrapper">
-    <div *ngFor="let challenge of challenges" class="challenge">
+    <div *ngFor="let challenge of showingChallenges" class="challenge">
         <h1>{{ challenge.title }}</h1>
         <img src="{{ challenge.imageURI }}"/>
         <p class="description">{{ challenge.description }}</p>

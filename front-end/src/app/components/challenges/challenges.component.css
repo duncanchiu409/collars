@@ -32,6 +32,11 @@ button{
     background-color: white;
 }
 
+.active, button:hover {
+    background-color: yellow;
+    border-radius: 5px;
+}
+
 nav{
     margin-top: 14px;
 }
