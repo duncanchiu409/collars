@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Challenge } from '../interfaces/challenge';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
@@ -11,7 +12,7 @@ import { catchError, retry, tap } from 'rxjs/operators';
 export class ChallengeService {
   private challengeURI = 'http://127.0.0.1:5001/colal-ae06f/us-central1/collars/challenges'
 
-  constructor(private http :HttpClient) {
+  constructor(private http :HttpClient, private angularFirestore :AngularFirestore) {
 
   }
 
@@ -21,8 +22,8 @@ export class ChallengeService {
     )
   }
 
-  addChallenges(){
-    
+  addChallenges(challenge :Challenge){
+    return this.angularFirestore.collection<Challenge>('challenges').add(challenge).catch(this.handleError('POST Challenge'))
   }
 
   private handleError<T>(operation='operation', result? :T){
