@@ -1,10 +1,14 @@
+import { Time } from "@angular/common";
+import { Timestamp } from "firebase/firestore";
+
 export interface Challenge{
     uid: string,
     title: string,
     description: string,
     imageURI: string,
     entriesCounter: number,
-    timer: Date,
+    startDate: Date,
+    endDate: Date,
     userID: string[],
     postID: string[]
 }
