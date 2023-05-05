@@ -16,7 +16,7 @@ export class ChallengesComponent implements OnInit {
     uid: "0",
     title: "Submit A Challenge Idea",
     description: "Fill out below about your awesome Collars challenge idea",
-    imageURI: "gs://colal-ae06f.appspot.com/challenges/default_challenge.png",
+    imageURI: "https://firebasestorage.googleapis.com/v0/b/colal-ae06f.appspot.com/o/challenges%2Fdefault_challenge.png?alt=media&token=ddd879d4-80d6-4336-ab24-2c1e3b38dbb7",
     entriesCounter: 0,
     timer: new Date(),
     userID: [],
