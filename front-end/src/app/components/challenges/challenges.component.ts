@@ -12,6 +12,17 @@ export class ChallengesComponent implements OnInit {
   public showingChallenges :Challenge[] = []
   public sortingLogic :string = 'upcoming'
 
+  public submitChallengeIdea :Challenge = {
+    uid: "0",
+    title: "Submit A Challenge Idea",
+    description: "Fill out below about your awesome Collars challenge idea",
+    imageURI: "gs://colal-ae06f.appspot.com/challenges/default_challenge.png",
+    entriesCounter: 0,
+    timer: new Date(),
+    userID: [],
+    postID: []
+  }
+
   constructor(public challengeService :ChallengeService) {}
 
   ngOnInit(): void {
@@ -33,6 +44,7 @@ export class ChallengesComponent implements OnInit {
         return false
       }
     })
+    this.challenges.push(this.submitChallengeIdea)
   }
 
   sortActive() :void{
@@ -45,6 +57,7 @@ export class ChallengesComponent implements OnInit {
         return false
       }
     })
+    this.challenges.push(this.submitChallengeIdea)
   }
 
 }
