@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Timestamp } from '@firebase/firestore';
 import { Challenge } from '../../shared/interfaces/challenge';
 import { ChallengeService } from 'src/app/shared/services/challenge.service';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import { MatDialogConfig } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-challenges',
@@ -25,7 +27,7 @@ export class ChallengesComponent implements OnInit {
     postID: []
   }
 
-  constructor(public challengeService :ChallengeService) {}
+  constructor(public challengeService :ChallengeService, private dialog :MatDialog) {}
 
   ngOnInit(): void {
     this.challengeService.getChallenges().subscribe(
@@ -74,4 +76,21 @@ export class ChallengesComponent implements OnInit {
     return this.challengeService.addChallenges(this.submitChallengeIdea).then(() => console.log("Submitted Challenge Idea"))
   }
 
+  openDialog() :void{
+    let config = new MatDialogConfig()
+    config.maxWidth = '400'
+    this.dialog.open(SubmitIdea,config)
+  }
+
+}
+
+@Component({
+  selector: 'submit-idea',
+  templateUrl: 'submitIdea.html'
+})
+
+export class SubmitIdea{
+  constructor(){
+
+  }
 }

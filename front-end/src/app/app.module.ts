@@ -23,6 +23,8 @@ import { ChallengesComponent } from './components/challenges/challenges.componen
 import { DogInfoComponent } from './components/dog-info/dog-info.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { ForgetPasswordComponent } from './components/forget-password/forget-password.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule } from '@angular/material/dialog'
 
 @NgModule({
   declarations: [
@@ -43,7 +45,9 @@ import { ForgetPasswordComponent } from './components/forget-password/forget-pas
     AngularFireDatabaseModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatDialogModule
   ],
   providers: [AuthService, ChallengeService, DogService],
   bootstrap: [AppComponent]
