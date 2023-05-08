@@ -25,6 +25,7 @@ import { WelcomeComponent } from './components/welcome/welcome.component';
 import { ForgetPasswordComponent } from './components/forget-password/forget-password.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog'
+import { SubmitIdea } from './components/challenges/challenges.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { MatDialogModule } from '@angular/material/dialog'
     ChallengesComponent,
     DogInfoComponent,
     WelcomeComponent,
-    ForgetPasswordComponent
+    ForgetPasswordComponent,
+    SubmitIdea
   ],
   imports: [
     BrowserModule,

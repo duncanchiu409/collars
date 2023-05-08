@@ -1,3 +1,14 @@
-<div style="background-color: aqua; padding: 30px; margin: 30px;">
-    <p>WELL DONE</p>
+<nav >
+    <h1 mat-dialog-title>SUBMIT AN IDEA</h1>
+    <button mat-button (click)="onNoClick()">X</button>
+</nav>
+
+<div>
+    <label>Challenge Name</label>
+    <input type="text" [(ngModel)]="title">
+    <label>The Rules</label>
+    <input type="text" [(ngModel)]="description">
+    <input type="file" accept="image/png, image/jpeg" (change)="saveImage($event)">
+    <label>Add a cover photo for your challenge idea (if you have one)</label>
+    <button (click)="onSubmit()">SUBMIT</button>
 </div>

@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Timestamp } from '@firebase/firestore';
+import { Timestamp, addDoc, getFirestore, collection, DocumentReference } from '@firebase/firestore';
 import { Challenge } from '../../shared/interfaces/challenge';
 import { ChallengeService } from 'src/app/shared/services/challenge.service';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { MatDialogConfig } from '@angular/material/dialog';
+import { getStorage, ref, getDownloadURL } from '@firebase/storage'
+import { uploadBytes } from '@angular/fire/storage'
+import { setDoc } from '@firebase/firestore';
 
 @Component({
   selector: 'app-challenges',
@@ -78,8 +81,10 @@ export class ChallengesComponent implements OnInit {
 
   openDialog() :void{
     let config = new MatDialogConfig()
-    config.maxWidth = '400'
-    this.dialog.open(SubmitIdea,config)
+    this.dialog.open(SubmitIdea,{
+      width: '400px',
+      height: '600px'
+    })
   }
 
 }
@@ -90,7 +95,55 @@ export class ChallengesComponent implements OnInit {
 })
 
 export class SubmitIdea{
-  constructor(){
+  public image :File | null = null
+  public title :string = ''
+  public description :string = ''
 
+  constructor(public dialogRef: MatDialogRef<SubmitIdea>){}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  saveImage(e :any) :void {
+    if(e.target !== null){
+      this.image = e.target.files[0]
+    }
+  }
+
+  async onSubmit() :Promise<void> {
+    let end7DaysFromNow :Date = new Date((new Date().valueOf() + 604800000))
+
+    // 1. Add Challenge + Grab challenge ID
+    let challengeRef = await addDoc(collection(getFirestore(),'challenges'),{
+      uid: '',
+      title: this.title,
+      description: this.description,
+      imageURI: '',
+      entriesCounter: 0,
+      startDate: new Date(),
+      endDate: end7DaysFromNow,
+      userID: [],
+      postID: []
+    })
+
+    // 2. upload the image
+    let filePath = `challenges/${challengeRef.id}`
+    let fileRef = ref(getStorage(), filePath)
+    if(this.image !== null){
+      let fileSnapshot = await uploadBytes(fileRef, this.image, {
+        contentType: this.image.type
+      })
+      console.log(fileSnapshot)
+    }
+    else{
+      return
+    }
+
+    // 3. Put download URI & uid into Challenge
+    let downloadURI = ''
+    downloadURI = await getDownloadURL(fileRef)
+    let snapshot = await setDoc(challengeRef,{uid: challengeRef.id, imageURI: downloadURI}, {merge: true})
+    console.log(downloadURI)
   }
 }
