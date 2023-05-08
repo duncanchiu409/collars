@@ -22,10 +22,10 @@ export class ChallengesComponent implements OnInit {
     uid: "0",
     title: "Submit A Challenge Idea",
     description: "Fill out below about your awesome Collars challenge idea",
-    imageURI: "https://firebasestorage.googleapis.com/v0/b/colal-ae06f.appspot.com/o/challenges%2Fdefault_challenge.png?alt=media&token=ddd879d4-80d6-4336-ab24-2c1e3b38dbb7",
+    imageURI: "https://dummyimage.com/250x250/000/fff",
     entriesCounter: 0,
-    startDate: new Date(0),
-    endDate: new Date(0),
+    startDate: new Date(),
+    endDate: new Date(),
     userID: [],
     postID: []
   }
@@ -41,38 +41,55 @@ export class ChallengesComponent implements OnInit {
     )
   }
 
-  sortUpComing() :void{
-    if(this.sortingLogic === 'upcoming'){
-      return
+  sortingButton(logic :string){
+    if(logic === 'upcoming'){
+      this.sortUpComing()
+    }
+    else if(logic === 'active'){
+      this.sortActive()
+    }
+    else{
+      console.log("Invalid sorting logic :')")
     }
 
+    this.timeParser()
+    debugger
+    this.showingChallenges.push(this.submitChallengeIdea)
+  }
+
+  sortUpComing() :void{
+    // if(this.sortingLogic === 'upcoming'){
+    //   return
+    // }
+
     this.sortingLogic = 'upcoming'
-    this.showingChallenges = this.challenges.filter((challenge :Challenge) => {
+    this.showingChallenges = JSON.parse(JSON.stringify(this.challenges.filter((challenge :Challenge) => {
       if((new Date(challenge.startDate).getTime() - new Date().getTime()) >= 0){
         return true
       }
       else{
         return false
       }
-    })
-    this.challenges.push(this.submitChallengeIdea)
+    })))
   }
 
   sortActive() :void{
-    if(this.sortingLogic === 'active'){
-      return
-    }
+    // if(this.sortingLogic === 'active'){
+    //   return
+    // }
 
     this.sortingLogic = 'active'
-    this.showingChallenges = this.challenges.filter((challenge :Challenge) => {
-      if(!((new Date(challenge.startDate).getTime() - new Date().getTime()) >= 0) && (new Date(challenge.endDate).getTime() - new Date().getTime()) >= 0){
+    this.showingChallenges = JSON.parse(JSON.stringify(this.challenges.filter((challenge :any) => {
+      let startDate :number = challenge.startDate._seconds
+      let endDate :number = challenge.endDate._seconds
+
+      if(!((startDate - new Date().getTime()/1000) >= 0) && (endDate - new Date().getTime()/1000) >= 0){
         return true
       }
       else{
         return false
       }
-    })
-    this.challenges.push(this.submitChallengeIdea)
+    })))
   }
 
   submitIdea() :Promise<void>{
@@ -87,6 +104,15 @@ export class ChallengesComponent implements OnInit {
     })
   }
 
+  timeParser() :void {
+    return this.showingChallenges.forEach((challenge :any) => {
+      let startDate :Date = new Date(challenge.startDate._seconds)
+      let endDate :Date = new Date(challenge.endDate._seconds)
+
+      challenge.startDate = startDate
+      challenge.endDate = endDate
+    })
+  }
 }
 
 @Component({
