@@ -27,6 +27,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog'
 import { SubmitIdea } from './components/challenges/challenges.component';
 import { ChallengeDetailsComponent } from './components/challenge-details/challenge-details.component';
+import { NavButtonComponent } from './components/nav-button/nav-button.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { ChallengeDetailsComponent } from './components/challenge-details/challe
     WelcomeComponent,
     ForgetPasswordComponent,
     SubmitIdea,
-    ChallengeDetailsComponent
+    ChallengeDetailsComponent,
+    NavButtonComponent
   ],
   imports: [
     BrowserModule,

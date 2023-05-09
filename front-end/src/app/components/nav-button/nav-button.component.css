@@ -1,0 +1,44 @@
+div{
+    position: sticky;
+    width: 248px;
+    height: 125px;
+    left: 50%;
+    bottom: 100px;
+    transform: translateX(-99px);
+}
+
+#top-button{
+    margin-left: 88px;
+    margin-right: 91px;
+    margin-bottom: 25px;
+    border: 0;
+    border-radius: 10px;
+}
+
+#left_button{
+    border: 0;
+    border-radius: 10px;
+}
+
+#right_button{
+    border: 0;
+    border-radius: 10px;
+}
+
+#main-button{
+    margin-left: 25px;
+    margin-right: 25px;
+    border: 0;
+    border-radius: 10px;
+}
+
+#off-button{
+    position: sticky;
+    left: 50%;
+    bottom: 96px;
+    transform: translateX(-12px);
+
+    border: 0;
+    border-radius: 10px;
+    background-color: yellow;
+}
