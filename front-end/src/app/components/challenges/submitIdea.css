@@ -1,0 +1,48 @@
+nav{
+    position: relative;
+}
+
+nav h1{
+    width: auto;
+    color: aquamarine;
+    font-weight: bolder;
+    font-size: x-large;
+    text-align: center;
+    width: 80%;
+}
+
+nav button{
+    position: absolute;
+    right: 10px;
+    top: 0%;
+    width: 20%;
+    height: 32px;
+    border: 0;
+    background-color: #8A7F8D
+}
+
+div label{
+    font-weight: bold;
+    margin-top: 20px;
+    color: orange;
+}
+
+div input{
+    width: 100%;
+    border-width: 0px 0px 0px 5px;
+}
+
+div input::placeholder{
+    font-weight: bolder;
+}
+
+div input.input_file{
+    margin-top: 20px;
+}
+
+div button{
+    margin-top: 10px;
+    width: 100%;
+    border: 0;
+    background-color: #8A7F8D;
+}

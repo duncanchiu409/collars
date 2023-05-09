@@ -36,7 +36,7 @@ export class ChallengesComponent implements OnInit {
     this.challengeService.getChallenges().subscribe(
       (challenges :Challenge[]) => {
         this.challenges = [... challenges]
-        this.sortUpComing()
+        this.sortingButton('upcoming')
       }
     )
   }
@@ -97,7 +97,6 @@ export class ChallengesComponent implements OnInit {
   }
 
   openDialog() :void{
-    let config = new MatDialogConfig()
     this.dialog.open(SubmitIdea,{
       width: '400px',
       height: '600px'
@@ -117,7 +116,8 @@ export class ChallengesComponent implements OnInit {
 
 @Component({
   selector: 'submit-idea',
-  templateUrl: 'submitIdea.html'
+  templateUrl: 'submitIdea.html',
+  styleUrls: ['submitIdea.css']
 })
 
 export class SubmitIdea{
@@ -135,6 +135,11 @@ export class SubmitIdea{
     if(e.target !== null){
       this.image = e.target.files[0]
     }
+  }
+
+  clickSubmitButton() :void {
+    this.onSubmit()
+    this.dialogRef.close()
   }
 
   async onSubmit() :Promise<void> {

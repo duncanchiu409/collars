@@ -7,7 +7,7 @@
 </nav>
 <div class="wrapper">
     <div *ngFor="let challenge of showingChallenges" class="challenge">
-        <h1>{{ challenge.title }}</h1>
+        <h1><a (click)="openDialog()">{{ challenge.title }}</a></h1>
         <img src="{{ challenge.imageURI }}" style="width: 250px; height: 250px"/>
         <p class="description">{{ challenge.description }}</p>
         <div>

@@ -1,14 +1,14 @@
 <nav>
-    <h1 mat-dialog-title style="display: inline-block;">SUBMIT AN IDEA</h1>
+    <h1 mat-dialog-title>SUBMIT AN IDEA</h1>
     <button mat-button (click)="onNoClick()">X</button>
 </nav>
 
 <div>
     <label>Challenge Name</label>
-    <input type="text" [(ngModel)]="title">
+    <input type="text" [(ngModel)]="title" placeholder="TYPE HERE">
     <label>The Rules</label>
-    <input type="text" [(ngModel)]="description">
-    <input type="file" accept="image/png, image/jpeg" (change)="saveImage($event)">
+    <input type="text" [(ngModel)]="description" placeholder="Type the rules or a description of your idea here">
+    <input class='input_file' type="file" accept="image/png, image/jpeg" (change)="saveImage($event)">
     <label>Add a cover photo for your challenge idea (if you have one)</label>
-    <button (click)="onSubmit()">SUBMIT</button>
+    <button (click)="clickSubmitButton()">SUBMIT</button>
 </div>
