@@ -7,7 +7,7 @@ div{
     transform: translateX(-99px);
 }
 
-#top-button{
+.top-button{
     margin-left: 88px;
     margin-right: 91px;
     margin-bottom: 25px;
@@ -15,24 +15,69 @@ div{
     border-radius: 10px;
 }
 
-#left_button{
+.left_button{
     border: 0;
     border-radius: 10px;
 }
 
-#right_button{
+.left-button-animation{
+    animation-duration: 1s;
+    animation-name: left-button-slidein;
+}
+
+@keyframes left-button-slidein{
+    from {
+      transform: translateX(87px);
+    }
+  
+    to {
+      transform: translateX(0px);
+    }
+}
+
+.top-button-animation{
+    animation-duration: 1s;
+    animation-name: top-button-slidein;
+}
+
+@keyframes top-button-slidein{
+    from {
+      transform: translateY(77px);
+    }
+  
+    to {
+      transform: translateY(0px);
+    }
+}
+
+.right_button{
     border: 0;
     border-radius: 10px;
 }
 
-#main-button{
+.right-button-animation{
+    animation-duration: 1s;
+    animation-name: right-button-slidein;
+}
+
+@keyframes right-button-slidein{
+    from {
+      transform: translateX(-87px);
+    }
+  
+    to {
+      transform: translateX(0px);
+    }
+}
+
+.main-button{
     margin-left: 25px;
     margin-right: 25px;
     border: 0;
     border-radius: 10px;
 }
 
-#off-button{
+.off-button{
     position: sticky;
     left: 50%;
     bottom: 96px;
@@ -40,5 +85,4 @@ div{
 
     border: 0;
     border-radius: 10px;
-    background-color: yellow;
 }
