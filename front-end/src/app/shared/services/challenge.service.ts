@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Challenge } from '../interfaces/challenge';
+import { ChallengeInterface } from '../interfaces/challenge';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Challenge } from '../classes/Challenge';
 
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
@@ -22,8 +23,12 @@ export class ChallengeService {
     )
   }
 
-  addChallenges(challenge :Challenge){
-    return this.angularFirestore.collection<Challenge>('challenges').add(challenge).catch(this.handleError('POST Challenge'))
+  addChallenges(challenge :ChallengeInterface){
+    return this.angularFirestore.collection<ChallengeInterface>('challenges').add(challenge).catch(this.handleError('POST Challenge'))
+  }
+
+  getChallenge<Challenge>(challengeID :string){
+    return this.angularFirestore.collection<Challenge>('challenges').doc(challengeID).get()
   }
 
   private handleError<T>(operation='operation', result? :T){

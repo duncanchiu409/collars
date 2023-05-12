@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Timestamp, addDoc, getFirestore, collection, DocumentReference } from '@firebase/firestore';
-import { Challenge } from '../../shared/interfaces/challenge';
+import { ChallengeInterface } from '../../shared/interfaces/challenge';
+import { Challenge } from '../../shared/classes/Challenge'
 import { ChallengeService } from 'src/app/shared/services/challenge.service';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { MatDialogConfig } from '@angular/material/dialog';
@@ -18,23 +19,11 @@ export class ChallengesComponent implements OnInit {
   public showingChallenges :Challenge[] = []
   public sortingLogic :string = ''
 
-  public submitChallengeIdea :Challenge = {
-    uid: "0",
-    title: "Submit A Challenge Idea",
-    description: "Fill out below about your awesome Collars challenge idea",
-    imageURI: "https://dummyimage.com/250x250/000/fff",
-    entriesCounter: 0,
-    startDate: new Date(),
-    endDate: new Date(),
-    userID: [],
-    postID: []
-  }
-
   constructor(public challengeService :ChallengeService, private dialog :MatDialog) {}
 
   ngOnInit(): void {
     this.challengeService.getChallenges().subscribe(
-      (challenges :Challenge[]) => {
+      (challenges) => {
         this.challenges = [... challenges]
         this.sortingButton('upcoming')
       }
@@ -54,7 +43,7 @@ export class ChallengesComponent implements OnInit {
 
     this.timeParser()
     debugger
-    this.showingChallenges.push(this.submitChallengeIdea)
+    this.showingChallenges.push(new Challenge().get_sumbit_idea())
   }
 
   sortUpComing() :void{
