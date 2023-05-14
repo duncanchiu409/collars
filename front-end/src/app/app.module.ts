@@ -28,6 +28,8 @@ import { MatDialogModule } from '@angular/material/dialog'
 import { SubmitIdea } from './components/challenges/challenges.component';
 import { ChallengeDetailsComponent } from './components/challenge-details/challenge-details.component';
 import { NavButtonComponent } from './components/nav-button/nav-button.component';
+import { SettingsComponent } from './components/settings/settings.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { NavButtonComponent } from './components/nav-button/nav-button.component
     ForgetPasswordComponent,
     SubmitIdea,
     ChallengeDetailsComponent,
-    NavButtonComponent
+    NavButtonComponent,
+    SettingsComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

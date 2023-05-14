@@ -18,8 +18,12 @@ export class ChallengesComponent implements OnInit {
   public challenges :Challenge[] = []
   public showingChallenges :Challenge[] = []
   public sortingLogic :string = ''
+  public submitIdeaChallenge :Challenge
 
-  constructor(public challengeService :ChallengeService, private dialog :MatDialog) {}
+  constructor(public challengeService :ChallengeService, private dialog :MatDialog) {
+    this.submitIdeaChallenge = new Challenge()
+    this.submitIdeaChallenge.get_sumbit_idea("submit_idea")
+  }
 
   ngOnInit(): void {
     this.challengeService.getChallenges().subscribe(
@@ -42,8 +46,7 @@ export class ChallengesComponent implements OnInit {
     }
 
     this.timeParser()
-    debugger
-    this.showingChallenges.push(new Challenge().get_sumbit_idea())
+    this.showingChallenges.push(this.submitIdeaChallenge)
   }
 
   sortUpComing() :void{
@@ -53,7 +56,9 @@ export class ChallengesComponent implements OnInit {
 
     this.sortingLogic = 'upcoming'
     this.showingChallenges = JSON.parse(JSON.stringify(this.challenges.filter((challenge :Challenge) => {
-      if((new Date(challenge.startDate).getTime() - new Date().getTime()) >= 0){
+      let startDate :number = challenge.startDate.seconds
+
+      if((startDate - new Date().getTime()/1000) >= 0){
         return true
       }
       else{
@@ -68,9 +73,9 @@ export class ChallengesComponent implements OnInit {
     // }
 
     this.sortingLogic = 'active'
-    this.showingChallenges = JSON.parse(JSON.stringify(this.challenges.filter((challenge :any) => {
-      let startDate :number = challenge.startDate._seconds
-      let endDate :number = challenge.endDate._seconds
+    this.showingChallenges = JSON.parse(JSON.stringify(this.challenges.filter((challenge :Challenge) => {
+      let startDate :number = challenge.startDate.seconds
+      let endDate :number = challenge.endDate.seconds
 
       if(!((startDate - new Date().getTime()/1000) >= 0) && (endDate - new Date().getTime()/1000) >= 0){
         return true
@@ -82,7 +87,7 @@ export class ChallengesComponent implements OnInit {
   }
 
   submitIdea() :Promise<void>{
-    return this.challengeService.addChallenges(this.submitChallengeIdea).then(() => console.log("Submitted Challenge Idea"))
+    return this.challengeService.addChallenges(this.submitIdeaChallenge).then(() => console.log("Submitted Challenge Idea"))
   }
 
   openDialog() :void{
