@@ -26,12 +26,21 @@ export class ChallengesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.challenges = []
     this.challengeService.getChallenges().subscribe(
-      (challenges) => {
-        this.challenges = [... challenges]
-        this.sortingButton('upcoming')
-      }
+      (res :any) => res.forEach(
+        (challenge :any) => {
+          let obj = new Challenge()
+          if(obj.parse_object(challenge)){
+            this.challenges.push(obj)
+          }
+          else{
+            throw Error("GET Challenges failed: Parse object into Challenge[]");
+          }
+        }
+      )
     )
+    this.sortingButton('upcoming')
   }
 
   sortingButton(logic :string){
@@ -44,9 +53,6 @@ export class ChallengesComponent implements OnInit {
     else{
       console.log("Invalid sorting logic :')")
     }
-
-    this.timeParser()
-    this.showingChallenges.push(this.submitIdeaChallenge)
   }
 
   sortUpComing() :void{
@@ -55,16 +61,14 @@ export class ChallengesComponent implements OnInit {
     // }
 
     this.sortingLogic = 'upcoming'
-    this.showingChallenges = JSON.parse(JSON.stringify(this.challenges.filter((challenge :Challenge) => {
-      let startDate :number = challenge.startDate.seconds
-
-      if((startDate - new Date().getTime()/1000) >= 0){
+    this.showingChallenges = this.challenges.filter((challenge :Challenge) => {
+      if((challenge.startDate - new Date().getTime()/1000) >= 0){
         return true
       }
       else{
         return false
       }
-    })))
+    })
   }
 
   sortActive() :void{
@@ -73,37 +77,20 @@ export class ChallengesComponent implements OnInit {
     // }
 
     this.sortingLogic = 'active'
-    this.showingChallenges = JSON.parse(JSON.stringify(this.challenges.filter((challenge :Challenge) => {
-      let startDate :number = challenge.startDate.seconds
-      let endDate :number = challenge.endDate.seconds
-
-      if(!((startDate - new Date().getTime()/1000) >= 0) && (endDate - new Date().getTime()/1000) >= 0){
+    this.showingChallenges = this.challenges.filter((challenge :Challenge) => {
+      if(((challenge.startDate - new Date().getTime()/1000) < 0) && (challenge.endDate - new Date().getTime()/1000) >= 0){
         return true
       }
       else{
         return false
       }
-    })))
-  }
-
-  submitIdea() :Promise<void>{
-    return this.challengeService.addChallenges(this.submitIdeaChallenge).then(() => console.log("Submitted Challenge Idea"))
+    })
   }
 
   openDialog() :void{
     this.dialog.open(SubmitIdea,{
       width: '400px',
       height: '600px'
-    })
-  }
-
-  timeParser() :void {
-    return this.showingChallenges.forEach((challenge :any) => {
-      let startDate :Date = new Date(challenge.startDate._seconds)
-      let endDate :Date = new Date(challenge.endDate._seconds)
-
-      challenge.startDate = startDate
-      challenge.endDate = endDate
     })
   }
 }
@@ -133,6 +120,7 @@ export class SubmitIdea{
 
   clickSubmitButton() :void {
     this.onSubmit()
+    debugger
     this.dialogRef.close()
   }
 
@@ -141,10 +129,8 @@ export class SubmitIdea{
 
     // 1. Add Challenge + Grab challenge ID
     let challengeRef = await addDoc(collection(getFirestore(),'challenges'),{
-      uid: '',
       title: this.title,
       description: this.description,
-      imageURI: '',
       entriesCounter: 0,
       startDate: new Date(),
       endDate: end7DaysFromNow,
@@ -156,19 +142,25 @@ export class SubmitIdea{
     let filePath = `challenges/${challengeRef.id}`
     let fileRef = ref(getStorage(), filePath)
     if(this.image !== null){
-      let fileSnapshot = await uploadBytes(fileRef, this.image, {
-        contentType: this.image.type
-      })
-      console.log(fileSnapshot)
+      debugger
+      try{
+        let fileSnapshot = await uploadBytes(fileRef, this.image, {
+          contentType: this.image.type
+        })
+        console.log(fileSnapshot)
+      }
+      catch(err){
+        console.log(err)
+      }
     }
     else{
-      return
+      throw Error('POST Challenge failed: Failed to submit imageRef')
     }
 
     // 3. Put download URI & uid into Challenge
     let downloadURI = ''
     downloadURI = await getDownloadURL(fileRef)
     let snapshot = await setDoc(challengeRef,{uid: challengeRef.id, imageURI: downloadURI}, {merge: true})
-    console.log(downloadURI)
+    console.log(snapshot)
   }
 }

@@ -1,7 +1,19 @@
 <div>
-  <div class='challenge-detail'>
-    <h1>Title: {{ challenge.title }}</h1>
-    <span>Hello World</span>
+  <ul>
+    <li><button>ALL</button></li>
+    <li><button>FOLLOWING</button></li>
+    <li><button>NEARBY</button></li>
+    <li><button>MY BREED</button></li>
+  </ul>
+  <div class='post-wrapper'>
+    <div *ngFor = 'let post of posts' class='post'>
+      <h1>{{ post.title }}</h1>
+      <img src="{{ post.imageURI }}">
+      <span>{{ post.posterID }}</span>
+    </div>
   </div>
+
+  <button (click)='debugButton()'>debugger</button>
 </div>
+
 <app-nav-button></app-nav-button>
