@@ -30,6 +30,7 @@ import { ChallengeDetailsComponent } from './components/challenge-details/challe
 import { NavButtonComponent } from './components/nav-button/nav-button.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { PostComponent } from './components/post/post.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { ProfileComponent } from './components/profile/profile.component';
     ChallengeDetailsComponent,
     NavButtonComponent,
     SettingsComponent,
-    ProfileComponent
+    ProfileComponent,
+    PostComponent
   ],
   imports: [
     BrowserModule,
