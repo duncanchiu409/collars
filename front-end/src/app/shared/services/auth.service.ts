@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-
+import { tap } from 'rxjs';
 import { User } from '../interfaces/user';
 
 import { FacebookAuthProvider } from '@firebase/auth';
@@ -22,7 +22,7 @@ export class AuthService {
     public afAuth: AngularFireAuth, // Inject Firebase auth service
     public router: Router,
     public ngZone: NgZone // NgZone service to remove outside scope warning
-  ) { 
+  ) {
     this.afAuth.authState.subscribe((user) => {
       if (user) {
         this.userData = user;
@@ -68,8 +68,8 @@ export class AuthService {
       });
   }
 
-  /* Setting up user data when sign in with username/password, 
-  sign up with username/password and sign in with social auth  
+  /* Setting up user data when sign in with username/password,
+  sign up with username/password and sign in with social auth
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
   SetUserData(user: any, username? :string) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
@@ -127,6 +127,10 @@ export class AuthService {
     return true;
   }
 
+  refreshedIDToken() {
+    return this.afAuth.currentUser.then(_ => _?.getIdToken(true)).then(_ => console.log(_))
+  }
+
   get withDogInfo(): boolean {
     const userString = localStorage.getItem('user')
 
@@ -137,7 +141,7 @@ export class AuthService {
     const user = JSON.parse(userString)
     const userRef = this.afs.doc(`users/${user.uid}`);
     const result = userRef.get()
-    
+
     let user_snapshot :any[] = []
     result.forEach((res) => {
       let res_snapshot = res.data()

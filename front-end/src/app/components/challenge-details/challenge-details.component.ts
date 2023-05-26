@@ -6,6 +6,8 @@ import { Challenge } from 'src/app/shared/classes/Challenge';
 import { ChallengeService } from 'src/app/shared/services/challenge.service';
 import { PostsService } from 'src/app/shared/shared/services/posts.service';
 import { Post } from '../../shared/classes/Post'
+import { HttpsCallable } from 'firebase/functions';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Component({
   selector: 'app-challenge-details',
@@ -17,7 +19,7 @@ export class ChallengeDetailsComponent implements OnInit {
   public challenge :Challenge;
   public posts :Post[];
 
-  constructor(private challengeService :ChallengeService, private route :ActivatedRoute, private postsService :PostsService) {
+  constructor(private challengeService :ChallengeService, private route :ActivatedRoute, private postsService :PostsService, private angularFire :AngularFireAuth) {
     this.id = ''
     this.challenge = new Challenge()
     this.posts = []
@@ -65,11 +67,20 @@ export class ChallengeDetailsComponent implements OnInit {
     )
   }
 
+  sendToken(){
+    let token = localStorage.getItem('user')
+    if(token !== null){
+      let idToken = JSON.parse(token)
+      let params = {'idToken': idToken.stsTokenManager.accessToken }
+      this.postsService.sendUserToken(params).subscribe(_ => console.log(_))
+    }
+    else{
+      throw Error("Token is not present in Browser")
+    }
+  }
+
   debugButton(){
-    this.postsService.getPost('EwNWEPjCrXtoC8wetHGo').subscribe(
-     _ => console.log(_)
-    )
-    debugger
+    this.sendToken()
   }
 
 }

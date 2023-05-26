@@ -31,6 +31,7 @@ import { NavButtonComponent } from './components/nav-button/nav-button.component
 import { SettingsComponent } from './components/settings/settings.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { PostComponent } from './components/post/post.component';
+import { PostsService } from './shared/shared/services/posts.service';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,7 @@ import { PostComponent } from './components/post/post.component';
     BrowserAnimationsModule,
     MatDialogModule
   ],
-  providers: [AuthService, ChallengeService, DogService],
+  providers: [AuthService, ChallengeService, DogService, PostsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
