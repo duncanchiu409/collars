@@ -67,3 +67,26 @@ button:hover{
   border-radius: 5px;
   background-color: yellow;
 }
+
+div.container{
+  position: relative;
+  padding: 0
+}
+
+div.container .top-right{
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  height: 15%;
+  width: 15%;
+}
+
+div.container .top-left{
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  height: 15%;
+  width: 15%;
+}

@@ -18,11 +18,13 @@ export class ChallengeDetailsComponent implements OnInit {
   public id :string;
   public challenge :Challenge;
   public posts :Post[];
+  public emojiDict :{[key: string]: string}
 
   constructor(private challengeService :ChallengeService, private route :ActivatedRoute, private postsService :PostsService, private angularFire :AngularFireAuth) {
     this.id = ''
     this.challenge = new Challenge()
     this.posts = []
+    this.emojiDict = {}
   }
 
   ngOnInit(): void {
@@ -41,6 +43,7 @@ export class ChallengeDetailsComponent implements OnInit {
           console.log(post)
         }
       }))).subscribe( _ => console.log("Done? ngOnInit"))
+      this.
   }
 
   getChallengeID(){
