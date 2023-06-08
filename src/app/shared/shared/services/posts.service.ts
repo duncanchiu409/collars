@@ -20,9 +20,9 @@ constructor(private angularFirestore :AngularFirestore, private authService :Aut
     this.url = environment.apiURL + '/posts'
   }
 
-  getPosts(challengeID :string){
+  getPosts(challengeID :string, params?: any){
     this.authService.refreshedIDToken()
-    return this.http.get<Array<Post>>(this.url + '/' + challengeID).pipe(
+    return this.http.get<Array<Post>>(this.url + '/' + challengeID, {params: params}).pipe(
       tap(_ => console.log(_))
     )
   }

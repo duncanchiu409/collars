@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./nav-button.component.css']
 })
 export class NavButtonComponent implements OnInit {
-  public toggleOn :boolean = true;
+  public toggleOn :boolean = false;
 
   constructor() { }
 

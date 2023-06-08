@@ -32,6 +32,7 @@
 .post-wrapper{
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  min-height: 100vh;
 }
 
 div.post{
@@ -85,8 +86,36 @@ div.container .top-right{
 div.container .top-left{
   position: absolute;
   top: 8px;
-  right: 8px;
+  left: 8px;
 
   height: 15%;
   width: 15%;
+}
+
+.active{
+  background-color: yellow;
+  border-radius: 5px;
+}
+
+div.top-left img{
+  padding-bottom: 20%;
+}
+
+li svg{
+  position: absolute;
+  width: 5%;
+  height: 5%;
+  right: 20px;
+}
+
+li button.mat-button{
+  border-radius: 50%;
+}
+
+li .mat-menu{
+  background-color: aqua;
+  color: white;
+
+  width: 200px;
+  height: 200px;
 }

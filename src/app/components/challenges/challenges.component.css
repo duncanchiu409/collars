@@ -4,7 +4,8 @@
 }
 
 .challenge{
-    display: inline-block;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
     margin: 10%;
     padding: 10%;
     border-style: solid;

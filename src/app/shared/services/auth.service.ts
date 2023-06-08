@@ -128,7 +128,7 @@ export class AuthService {
   }
 
   refreshedIDToken() {
-    return this.afAuth.currentUser.then(_ => _?.getIdToken(true)).then(_ => console.log(_))
+    return this.afAuth.currentUser.then(_ => _?.getIdToken(true))
   }
 
   get withDogInfo(): boolean {

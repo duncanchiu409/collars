@@ -50,6 +50,10 @@ export class ChallengesComponent implements OnInit {
     else if(logic === 'active'){
       this.sortActive()
     }
+    else if(logic === 'completed'){
+      console.log('Crazy')
+      this.sortCompleted()
+    }
     else{
       console.log("Invalid sorting logic :')")
     }
@@ -85,6 +89,19 @@ export class ChallengesComponent implements OnInit {
         return false
       }
     })
+  }
+
+  sortCompleted() :void{
+    let user_token_in_string :string | null = localStorage.getItem('user')
+    let user_token_in_json = user_token_in_string !== null ? JSON.parse(user_token_in_string) : null
+
+    if(user_token_in_string !== null){
+      this.sortingLogic = 'completed'
+      this.showingChallenges = this.challenges.filter(challenge => challenge.userID.includes(user_token_in_json.uid))
+    }
+    else{
+      console.log('Hmm, nothing happened')
+    }
   }
 
   openDialog() :void{

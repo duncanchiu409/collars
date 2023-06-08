@@ -9,6 +9,7 @@ export class Post {
   public imageURI: string;
   public posterID: string;
   public comments: Comment[];
+  public reactionsCounter: {[key:string]: string}
 
   constructor(){
     this.title = ''
@@ -19,6 +20,7 @@ export class Post {
     this.posterID = ''
     this.comments = []
     this.uid = ''
+    this.reactionsCounter = {}
   }
 
   createPostsfromPosts(post :any){
@@ -60,6 +62,12 @@ export class Post {
     }
     if(post.uid !== undefined){
       this.uid = post.uid
+    }
+    else{
+      return false
+    }
+    if(post.reactionsCounter !== undefined){
+      this.reactionsCounter = post.reactionsCounter
     }
     else{
       return false

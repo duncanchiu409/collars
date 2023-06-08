@@ -26,12 +26,16 @@ import { ForgetPasswordComponent } from './components/forget-password/forget-pas
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog'
 import { SubmitIdea } from './components/challenges/challenges.component';
-import { ChallengeDetailsComponent } from './components/challenge-details/challenge-details.component';
+import { ChallengeDetailsComponent} from './components/challenge-details/challenge-details.component';
 import { NavButtonComponent } from './components/nav-button/nav-button.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { PostComponent } from './components/post/post.component';
 import { PostsService } from './shared/shared/services/posts.service';
+import { ReactionsService } from './shared/services/reactions.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { TimeToDaysPipe } from './time-to-days.pipe';
 
 @NgModule({
   declarations: [
@@ -47,7 +51,8 @@ import { PostsService } from './shared/shared/services/posts.service';
     NavButtonComponent,
     SettingsComponent,
     ProfileComponent,
-    PostComponent
+    PostComponent,
+    TimeToDaysPipe,
   ],
   imports: [
     BrowserModule,
@@ -60,9 +65,11 @@ import { PostsService } from './shared/shared/services/posts.service';
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatMenuModule,
+    MatButtonModule,
   ],
-  providers: [AuthService, ChallengeService, DogService, PostsService],
+  providers: [AuthService, ChallengeService, DogService, PostsService, ReactionsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
