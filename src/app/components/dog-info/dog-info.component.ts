@@ -48,7 +48,7 @@ export class DogInfoComponent implements OnInit {
     }
     else{
       let user = localStorage.getItem('user')
-    
+
       if(user === null){
         this.router.navigate(['/'])
       }
@@ -61,13 +61,20 @@ export class DogInfoComponent implements OnInit {
   addDog(){
     let user = localStorage.getItem("user")
 
-    let dog = { 
-      uid: "",
-      dogName: this.dogName,
-      dogBreed: this.dogBreed,
-      dogTeritory: this.dogTeritory,
-      dogImageURI: "",
-      userId: "4tpIZ6ZBVyfHDTe6owqdLaVx9BN2"
+    if( user !== null ){
+      let user_obj = JSON.parse(user)
+      if( user !== null && user_obj.uid !== null ){
+        let dog = {
+          uid: "",
+          dogName: this.dogName,
+          dogBreed: this.dogBreed,
+          dogTeritory: this.dogTeritory,
+          dogImageURI: "",
+          userId: user_obj.uid
+        }
+        this.dogSevice.addDogInfo(dog).subscribe()
+        this.router.navigate(['challenges'])
+      }
     }
 
     if(user == null){
@@ -75,7 +82,6 @@ export class DogInfoComponent implements OnInit {
     }
     else{
       // dog.userId = JSON.parse(user).uid
-      this.dogSevice.addDogInfo(dog).subscribe()
       // this.router.navigate(["/challenges"])
     }
   }

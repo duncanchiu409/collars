@@ -8,7 +8,22 @@
     <input type="text" [(ngModel)]="title" placeholder="TYPE HERE">
     <label>The Rules</label>
     <input type="text" [(ngModel)]="description" placeholder="Type the rules or a description of your idea here">
-    <input class='input_file' type="file" accept="image/png, image/jpeg" (change)="saveImage($event)">
+    <input class='input_file' type="file" accept="image/png, image/jpeg" (change)="fileChangeEvent($event)">
     <label>Add a cover photo for your challenge idea (if you have one)</label>
+
+    <div class="">
+      <image-cropper
+          [imageChangedEvent]="imageChangedEvent"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="4 / 4"
+          format="png"
+          (imageCropped)="imageCropped($event)"
+          (imageLoaded)="imageLoaded()"
+          (cropperReady)="cropperReady()"
+          (loadImageFailed)="loadImageFailed()"
+          ></image-cropper>
+
+      <img [src]='croppedImage' />
+    </div>
     <button (click)="clickSubmitButton()">SUBMIT</button>
 </div>

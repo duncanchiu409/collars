@@ -36,6 +36,7 @@ import { ReactionsService } from './shared/services/reactions.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { TimeToDaysPipe } from './time-to-days.pipe';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import { TimeToDaysPipe } from './time-to-days.pipe';
     MatDialogModule,
     MatMenuModule,
     MatButtonModule,
+    ImageCropperModule,
   ],
   providers: [AuthService, ChallengeService, DogService, PostsService, ReactionsService],
   bootstrap: [AppComponent]

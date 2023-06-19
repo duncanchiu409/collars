@@ -46,3 +46,8 @@ div button{
     border: 0;
     background-color: #8A7F8D;
 }
+
+.grid-container{
+  display: grid;
+  grid-template-columns: auto auto;
+}

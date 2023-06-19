@@ -9,6 +9,9 @@ import { getStorage, ref, getDownloadURL } from '@firebase/storage'
 import { uploadBytes } from '@angular/fire/storage'
 import { setDoc } from '@firebase/firestore';
 
+import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper'
+import { NgxImageCompressService } from 'ngx-image-compress'
+
 @Component({
   selector: 'app-challenges',
   templateUrl: './challenges.component.html',
@@ -19,6 +22,8 @@ export class ChallengesComponent implements OnInit {
   public showingChallenges :Challenge[] = []
   public sortingLogic :string = ''
   public submitIdeaChallenge :Challenge
+
+
 
   constructor(public challengeService :ChallengeService, private dialog :MatDialog) {
     this.submitIdeaChallenge = new Challenge()
@@ -106,7 +111,7 @@ export class ChallengesComponent implements OnInit {
 
   openDialog() :void{
     this.dialog.open(SubmitIdea,{
-      width: '400px',
+      width: '1000px',
       height: '600px'
     })
   }
@@ -123,7 +128,31 @@ export class SubmitIdea{
   public title :string = ''
   public description :string = ''
 
-  constructor(public dialogRef: MatDialogRef<SubmitIdea>){}
+  imageChangedEvent :any = ''
+  croppedImage :any = ''
+
+  imgResultBeforeCompression: string = ''
+  imgResultAfterCompression: string = ''
+
+  fileChangeEvent(event: any): void {
+    this.imageChangedEvent = event;
+  }
+  imageCropped(event: ImageCroppedEvent) {
+    this.croppedImage = event.base64;
+    console.log(event)
+    debugger
+  }
+  imageLoaded() {
+    // show cropper
+  }
+  cropperReady() {
+    // cropper ready
+  }
+  loadImageFailed() {
+    // show message
+  }
+
+  constructor(public dialogRef: MatDialogRef<SubmitIdea>, private imageCompress: NgxImageCompressService){}
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -133,6 +162,20 @@ export class SubmitIdea{
     if(e.target !== null){
       this.image = e.target.files[0]
     }
+  }
+
+  compressImage() :void {
+    this.imageCompress.uploadFile().then(({image, orientation}) => {
+      this.imgResultBeforeCompression = image;
+      console.log('Size in bytes of the uploaded image was:', this.imageCompress.byteCount(image));
+
+      this.imageCompress
+      .compressFile(image, orientation, 50, 50) // 50% ratio, 50% quality
+      .then(compressedImage => {
+        this.imgResultAfterCompression = compressedImage;
+        console.log('Size in bytes after compression is now:', this.imageCompress.byteCount(compressedImage));
+      });
+    });
   }
 
   clickSubmitButton() :void {
