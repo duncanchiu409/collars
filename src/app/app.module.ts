@@ -37,6 +37,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { TimeToDaysPipe } from './time-to-days.pipe';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { imageDialog } from './components/dog-info/dog-info.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { ImageCropperModule } from 'ngx-image-cropper';
     ProfileComponent,
     PostComponent,
     TimeToDaysPipe,
+    imageDialog
   ],
   imports: [
     BrowserModule,
