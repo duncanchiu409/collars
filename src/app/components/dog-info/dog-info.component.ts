@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { NgxImageCompressService } from 'ngx-image-compress';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { throwError } from 'rxjs';
 import { DogService } from 'src/app/shared/services/dog.service';
@@ -24,8 +25,9 @@ export class DogInfoComponent implements OnInit {
   public original_profile_image :File | null
 
   public cropped_image :string = 'https://firebasestorage.googleapis.com/v0/b/colal-ae06f.appspot.com/o/userprofile%2F5856.jpg?alt=media&token=f626ef7b-2458-47a6-82db-3dea63ac8f9a'
+  public compressed_image :string = ''
 
-  constructor (public router :Router, private dogSevice :DogService, public dialog :MatDialog) {
+  constructor (public router :Router, private dogSevice :DogService, public dialog :MatDialog, private imageCompress: NgxImageCompressService) {
     this.original_profile_image = null
     this.cropped_profile_image = null
   }
@@ -108,11 +110,15 @@ export class DogInfoComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log(result)
-      if(result === ''){
+      if(result === '' || result === undefined){
         this.cropped_image = 'https://firebasestorage.googleapis.com/v0/b/colal-ae06f.appspot.com/o/userprofile%2F5856.jpg?alt=media&token=f626ef7b-2458-47a6-82db-3dea63ac8f9a'
       }
       else{
         this.cropped_image = result
+
+        this.imageCompress.compressFile(this.cropped_image, 1, 50, 50, 100, 100).then(result_image => {
+          this.compressed_image = result_image
+        })
       }
     })
   }
@@ -171,6 +177,10 @@ export class imageDialog{
   }
 
   closeDialog(){
+    this.dialogRef.close()
+  }
+
+  closeDoneDialog(){
     this.dialogRef.close(this.cropped_image)
   }
 }
