@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { getStorage, uploadString, ref } from 'firebase/storage';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { throwError } from 'rxjs';
@@ -71,7 +72,7 @@ export class DogInfoComponent implements OnInit {
     }
   }
 
-  addDog(){
+  async addDog(){
     let user = localStorage.getItem("user")
 
     if( user !== null ){
@@ -85,7 +86,28 @@ export class DogInfoComponent implements OnInit {
           dogImageURI: "",
           userId: user_obj.uid
         }
-        this.dogSevice.addDogInfo(dog).subscribe()
+        this.dogSevice.addDogInfo(dog).subscribe( async something => {
+          let filePath = `userprofile/compressed/${something.uid}`
+          let fileRef = ref(getStorage(), filePath)
+
+          if(this.compressed_image !== ''){
+            try{
+              let fileSnapshot = await uploadString(fileRef, this.compressed_image, 'data_url').then((snapshot) => {
+                console.log(snapshot)
+              })
+            }
+            catch(err){
+              console.log(err)
+            }
+          }
+        })
+
+        // upload the image?
+        //
+        //
+        //
+        // put download url && uid into dog-info
+
         this.router.navigate(['challenges'])
       }
     }

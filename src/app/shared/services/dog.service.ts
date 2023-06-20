@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { DogInfo } from '../interfaces/dogInfo'
 
-import { Observable, throwError, of } from 'rxjs';
+import { Observable, throwError, of, map } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
 
 @Injectable({
