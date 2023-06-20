@@ -1,0 +1,17 @@
+.higher-buttons{
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  text-align: center;
+}
+
+.item-b{
+  font-size: x-large;
+}
+
+.lower-buttons{
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-items: stretch;
+  align-items: stretch;
+  margin-top: 30px;
+}
