@@ -2,7 +2,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { getStorage, uploadString, ref } from 'firebase/storage';
+import { collection, doc, getFirestore, setDoc } from '@firebase/firestore';
+import { getStorage, uploadString, ref, getDownloadURL } from 'firebase/storage';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { throwError } from 'rxjs';
@@ -84,21 +85,60 @@ export class DogInfoComponent implements OnInit {
           dogBreed: this.dogBreed,
           dogTeritory: this.dogTeritory,
           dogImageURI: "",
-          userId: user_obj.uid
+          userId: user_obj.uid,
+          dogCompressedImageURI: ''
         }
         this.dogSevice.addDogInfo(dog).subscribe( async something => {
           let filePath = `userprofile/compressed/${something.uid}`
           let fileRef = ref(getStorage(), filePath)
 
+          let compressedFileURL = ''
+          let originalFileURL = ''
+
+          let dogRef = doc(getFirestore(), 'dogs', something.uid)
+
           if(this.compressed_image !== ''){
             try{
               let fileSnapshot = await uploadString(fileRef, this.compressed_image, 'data_url').then((snapshot) => {
-                console.log(snapshot)
+                console.log(snapshot.ref)
+                getDownloadURL(snapshot.ref).then(async (result)=>{
+                  console.log(result)
+                  compressedFileURL = result
+                  let snapshot = await setDoc(dogRef, {dogCompressedImageURI: compressedFileURL}, {merge: true})
+                  console.log(snapshot)
+                })
               })
             }
             catch(err){
               console.log(err)
             }
+          }
+
+          let originalfilePath = `userprofile/uncompressed/${something.uid}`
+          let originalfileRef = ref(getStorage(), originalfilePath)
+
+          if(this.cropped_image !== 'https://firebasestorage.googleapis.com/v0/b/colal-ae06f.appspot.com/o/userprofile%2F5856.jpg?alt=media&token=f626ef7b-2458-47a6-82db-3dea63ac8f9a'){
+            try{
+              let fileSnapshot = await uploadString(originalfileRef, this.cropped_image, 'data_url').then((snapshot) => {
+                getDownloadURL(snapshot.ref).then(async result => {
+                  console.log(result)
+                  originalFileURL = result
+                  let snapshot = await setDoc(dogRef, {dogImageURI: originalFileURL}, {merge: true})
+                  console.log(snapshot)
+                })
+              })
+            }
+            catch(err){
+              console.log(err)
+            }
+          }
+
+          // upload file to dog obj in firebase firestore
+          let snapshot;
+          debugger
+          if( compressedFileURL !== '' && originalFileURL !== ''){
+             snapshot = await setDoc(dogRef, {dogImageURI: originalFileURL, dogCompressedImageURI: compressedFileURL}, {merge: true})
+             console.log(snapshot)
           }
         })
 
@@ -191,9 +231,9 @@ export class imageDialog{
       reader.onloadend = () => {
         this.image_dataURL = <string> reader.result
       }
-    }
-    if(this.original_profile_image !== null){
-      reader.readAsDataURL(this.original_profile_image)
+      if(this.original_profile_image !== null){
+        reader.readAsDataURL(this.original_profile_image)
+      }
     }
     console.log(this.original_profile_image)
   }

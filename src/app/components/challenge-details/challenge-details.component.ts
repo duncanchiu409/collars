@@ -27,6 +27,7 @@ export class ChallengeDetailsComponent implements OnInit {
   public emojiURIArray :{[key: string]:string[]}
   public sortingLogic :string;
   public params :{[key: string]:string}
+  public postsObject :any[];
 
   constructor(private challengeService :ChallengeService, private route :ActivatedRoute, private postsService :PostsService, private angularFire :AngularFireAuth, private reactionService :ReactionsService, private authService :AuthService) {
     this.id = ''
@@ -36,6 +37,7 @@ export class ChallengeDetailsComponent implements OnInit {
     this.sortingLogic = 'ALL'
     this.emojiURIArray = {}
     this.params = {sort: 'ALL', userAccessToken: ''}
+    this.postsObject = []
   }
 
   ngOnInit(): void {
@@ -93,6 +95,25 @@ export class ChallengeDetailsComponent implements OnInit {
     )
   }
 
+  renderPosts(){
+    // refresh token
+    // getNewPostsService()
+    //
+    this.authService.refreshedIDToken().then((_) => {
+      if(_ !== undefined){
+        this.params['userAccessToken'] = _
+        this.postsService.getPosts(this.id, this.params).subscribe((result) => {
+          this.postsObject = []
+          result.forEach(obj => this.postsObject.push(obj))
+        })
+      }
+      else{
+        console.log("Token is not present")
+      }
+    }).then(() => console.log(this.postsObject))
+    // render in html
+  }
+
   getChallengeID(){
     this.route.params.subscribe((params) => {
       if(params['id']){
@@ -124,20 +145,7 @@ export class ChallengeDetailsComponent implements OnInit {
         if(obj.createPostsfromPosts(post)){
           this.posts.push(obj)
         }
-      })
-                                                                      ))
-  }
-
-  sendToken(){
-    let token = localStorage.getItem('user')
-    if(token !== null){
-      let idToken = JSON.parse(token)
-      let params = {'idToken': idToken.stsTokenManager.accessToken }
-      this.postsService.sendUserToken(params).subscribe(_ => console.log(_))
-    }
-    else{
-      throw Error("Token is not present in Browser")
-    }
+      })))
   }
 
   changeSortingLogic(logic :string){
@@ -147,6 +155,6 @@ export class ChallengeDetailsComponent implements OnInit {
   }
 
   debugButton(){
-    this.ngOnInit()
+    this.renderPosts()
   }
 }

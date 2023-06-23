@@ -121,3 +121,29 @@ li .mat-menu{
   width: 200px;
   height: 200px;
 }
+
+.name-tag{
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-template-columns: 50px 1fr auto;
+}
+
+.item-a{
+  border-radius: 50%;
+  grid-row: 1 / span 2;
+}
+
+.item-b{
+  justify-self: center;
+  font-weight: bolder;
+}
+
+.item-c{
+  justify-self: center;
+  color: grey;
+}
+
+.item-d{
+  grid-row: 1 / span 2;
+  grid-column-start: 3;
+}
