@@ -6,11 +6,12 @@ import { ChallengeService } from 'src/app/shared/services/challenge.service';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { MatDialogConfig } from '@angular/material/dialog';
 import { getStorage, ref, getDownloadURL } from '@firebase/storage'
-import { uploadBytes } from '@angular/fire/storage'
+import { uploadBytes, uploadString } from '@angular/fire/storage'
 import { setDoc } from '@firebase/firestore';
 
 import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper'
 import { NgxImageCompressService } from 'ngx-image-compress'
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'app-challenges',
@@ -23,45 +24,51 @@ export class ChallengesComponent implements OnInit {
   public sortingLogic :string = ''
   public submitIdeaChallenge :Challenge
 
-
-
-  constructor(public challengeService :ChallengeService, private dialog :MatDialog) {
+  constructor(public challengeService :ChallengeService, private dialog :MatDialog, private authService :AuthService) {
     this.submitIdeaChallenge = new Challenge()
     this.submitIdeaChallenge.get_sumbit_idea("submit_idea")
   }
 
   ngOnInit(): void {
-    this.challenges = []
-    this.challengeService.getChallenges().subscribe(
-      (res :any) => res.forEach(
-        (challenge :any) => {
-          let obj = new Challenge()
-          if(obj.parse_object(challenge)){
-            this.challenges.push(obj)
-          }
-          else{
-            throw Error("GET Challenges failed: Parse object into Challenge[]");
-          }
-        }
-      )
-    )
-    this.sortingButton('upcoming')
+    this.sortingLogic = 'upcoming'
   }
 
   sortingButton(logic :string){
     if(logic === 'upcoming'){
-      this.sortUpComing()
+      this.renderChallenges('UPCOMING')
+      this.sortingLogic = 'upcoming'
     }
     else if(logic === 'active'){
-      this.sortActive()
+      this.renderChallenges('ACTIVE')
+      this.sortingLogic = 'active'
     }
     else if(logic === 'completed'){
       console.log('Crazy')
-      this.sortCompleted()
+      this.renderChallenges('COMPLETED')
+      this.sortingLogic = 'completed'
     }
     else{
       console.log("Invalid sorting logic :')")
     }
+  }
+
+  renderChallenges(sort :string){
+    this.showingChallenges = []
+    this.authService.refreshedIDToken().then(userAccessToken => {
+      if(userAccessToken !== undefined){
+        this.challengeService.getChallenges({sort: sort, userAccessToken: userAccessToken}).subscribe(resultChallenges => {
+          resultChallenges.forEach(challenge => {
+            let tmp = new Challenge()
+            if(tmp.parse_object(challenge) === null){
+              console.log('something wrong in parsing',challenge)
+            }
+            this.showingChallenges.push(JSON.parse(JSON.stringify(tmp)))
+        })
+      })}
+      else{
+        console.log('UserAccessToken returned',userAccessToken)
+      }
+    })
   }
 
   sortUpComing() :void{
@@ -201,13 +208,10 @@ export class SubmitIdea{
     // 2. upload the image
     let filePath = `challenges/${challengeRef.id}`
     let fileRef = ref(getStorage(), filePath)
-    if(this.image !== null){
+    if(this.croppedImage !== null){
       debugger
       try{
-        let fileSnapshot = await uploadBytes(fileRef, this.image, {
-          contentType: this.image.type
-        })
-        console.log(fileSnapshot)
+        uploadString(fileRef, this.croppedImage, 'data_url');
       }
       catch(err){
         console.log(err)

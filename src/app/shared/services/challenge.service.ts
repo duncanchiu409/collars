@@ -16,8 +16,20 @@ export class ChallengeService {
     this.url = environment.apiURL + '/challenges'
   }
 
-  getChallenges(){
-    return this.http.get(this.url)
+  getChallenges(params :any){
+    let url = this.url + '/testing'
+    return this.http.get<Challenge[]>(url, {params: params}).pipe(
+      tap(_ => console.log(_)),
+      catchError(this.handleError<Challenge[]>('NEW GET A CHALLENGE'))
+    )
+  }
+
+  newGetChallenges(params :any){
+    let url = this.url + '/testing'
+    return this.http.get(url, {params: params}).pipe(
+      tap(_ => console.log(_)),
+      catchError(this.handleError<Challenge>('NEW GET A CHALLENGE'))
+    )
   }
 
   addChallenges(challenge :Challenge){

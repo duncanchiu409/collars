@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { tap, switchMap, map, concat, of } from 'rxjs'
 import { DocumentSnapshot } from '@firebase/firestore';
 import { Challenge } from 'src/app/shared/classes/Challenge';
@@ -29,7 +29,7 @@ export class ChallengeDetailsComponent implements OnInit {
   public params :{[key: string]:string}
   public postsObject :any[];
 
-  constructor(private challengeService :ChallengeService, private route :ActivatedRoute, private postsService :PostsService, private angularFire :AngularFireAuth, private reactionService :ReactionsService, private authService :AuthService) {
+  constructor(private challengeService :ChallengeService, private route :ActivatedRoute, private postsService :PostsService, private angularFire :AngularFireAuth, private reactionService :ReactionsService, private authService :AuthService, public router :Router) {
     this.id = ''
     this.challenge = new Challenge()
     this.posts = []
@@ -41,30 +41,11 @@ export class ChallengeDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    setTimeout(() => {this.route.params.pipe(
-      map( params => {
-        this.id = params['id']
-        return this.id
-      }),
-      tap(_ => this.authService.refreshedIDToken().then( _ => {
-        if(_ !== undefined){
-          this.params['userAccessToken'] = _
-          console.log(this.params)
-        }
-      })),
-      switchMap( id => this.postsService.getPosts(id, this.params) ),
-      tap( posts => posts.forEach((post) => {
-        let obj = new Post()
-        if(obj.createPostsfromPosts(post)){
-          this.posts.push(obj)
-        }
-        else{
-          console.log(post)
-        }
-      }))).subscribe( _ => console.log("Done? ngOnInit"))
-    this.getReactions()
-    }, 3000)
-      }
+    this.route.params.subscribe((params) => {
+      this.id = params['id']
+    })
+    setTimeout(this.renderPosts, 3000)
+  }
 
   getReactions(){
     this.reactionService.getReactions().subscribe(
@@ -148,10 +129,13 @@ export class ChallengeDetailsComponent implements OnInit {
       })))
   }
 
+  logout(){
+    this.authService.SignOut()
+  }
+
   changeSortingLogic(logic :string){
     this.sortingLogic = logic
     this.getPosts()
-    setTimeout(this.getReactions, 1000)
   }
 
   debugButton(){
