@@ -21,7 +21,6 @@ constructor(private angularFirestore :AngularFirestore, private authService :Aut
   }
 
   getPosts(challengeID :string, params?: any){
-    this.authService.refreshedIDToken()
     return this.http.get<Array<any>>(this.url + '/' + challengeID, {params: params}).pipe(
       tap(_ => console.log(_))
     )

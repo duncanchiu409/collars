@@ -29,6 +29,8 @@ export class ChallengeDetailsComponent implements OnInit {
   public params :{[key: string]:string}
   public postsObject :any[];
 
+  public dropDown = false;
+
   constructor(private challengeService :ChallengeService, private route :ActivatedRoute, private postsService :PostsService, private angularFire :AngularFireAuth, private reactionService :ReactionsService, private authService :AuthService, public router :Router) {
     this.id = ''
     this.challenge = new Challenge()
@@ -135,7 +137,19 @@ export class ChallengeDetailsComponent implements OnInit {
 
   changeSortingLogic(logic :string){
     this.sortingLogic = logic
-    this.getPosts()
+    this.params['sort'] = logic
+    this.renderPosts()
+  }
+
+  dropDownMenu(){
+    this.getChallenge()
+
+    if(this.dropDown === false){
+      this.dropDown = true
+    }
+    else{
+      this.dropDown = false
+    }
   }
 
   debugButton(){

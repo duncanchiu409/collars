@@ -147,3 +147,15 @@ li .mat-menu{
   grid-row: 1 / span 2;
   grid-column-start: 3;
 }
+
+.drop-down-menu{
+  background-color: aqua;
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-template-columns: auto auto;
+  justify-items: center;
+}
+
+.tem-a{
+  grid-column: 1 / span 2;
+}
