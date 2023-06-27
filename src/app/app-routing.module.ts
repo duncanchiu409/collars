@@ -11,6 +11,7 @@ import { ChallengeDetailsComponent } from './components/challenge-details/challe
 import { AuthGuard } from './shared/guard/auth.guard';
 import { DogGuard } from './shared/guard/dog.guard';
 import { DogInfoComponent } from './components/dog-info/dog-info.component';
+import { PostComponent } from './components/post/post.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/welcome', pathMatch: 'full' },
@@ -20,7 +21,8 @@ const routes: Routes = [
   { path: 'challenges', component: ChallengesComponent, canActivate:[AuthGuard] },
   { path: 'dog-info', component: DogInfoComponent, canActivate:[AuthGuard]},
   { path: 'forget-password', component: ForgetPasswordComponent},
-  { path: 'challenge/:id', component: ChallengeDetailsComponent}
+  { path: 'challenge/:id', component: ChallengeDetailsComponent},
+  { path: 'post/:id', component: PostComponent }
 ];
 
 @NgModule({
