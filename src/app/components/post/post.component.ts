@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, QueryList, ViewChild, ViewChildren, Renderer2 } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CommentsService } from 'src/app/services/comments.service';
+import { PostService } from 'src/app/services/post.service';
+import { map, forkJoin, switchMap, tap } from 'rxjs';
+import { ReactionsService } from 'src/app/shared/services/reactions.service';
 
 @Component({
   selector: 'app-post',
@@ -6,10 +11,165 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./post.component.css']
 })
 export class PostComponent implements OnInit {
+  public postid :string = '';
+  public post :any = {};
+  public inputComment :string = ''
+  public comments :any = []
+  public cursorChange :boolean = true;
+  public timer :any;
 
-  constructor() { }
+  public counter :number = 0;
+  public iteration :number = 6
+  public running :boolean = false;
 
-  ngOnInit(): void {
+  public offset :number;
+  public limit :number;
+
+  public userReactions :{[key:string] :boolean} = {}
+
+  @ViewChild('heartgenerator') div? :ElementRef;
+  @ViewChild('heartsvg') heartsvg? :ElementRef;
+  @ViewChild('postImage') image :any;
+  @ViewChild('cursor') cursor :any;
+  @ViewChildren('heartcursortrailer') queryElement? :QueryList<ElementRef>
+
+  constructor(private postService :PostService, private route :ActivatedRoute, private commentService :CommentsService, private reactionService :ReactionsService, private render :Renderer2, private router :Router) {
+    this.offset = 0;
+    this.limit = 5;
   }
 
+  ngOnInit(): void {
+    this.route.params.pipe(
+      tap(postid => this.postid = postid['id']),
+      switchMap( postid => this.postService.getPost(postid['id']) )
+    ).subscribe( post => this.post = post )
+    this.loadMore()
+  }
+
+  clickReaction(emojiURI :string){
+    this.reactionService.reactEmoji({ reactionsID: emojiURI, postID: this.postid }).subscribe((result) => {
+      console.log(result)
+    })
+  }
+
+  mouseDown(event :MouseEvent){
+    if(this.queryElement !== undefined){
+      const elements = this.queryElement.toArray()
+      let i = 0;
+      while(i < 6){
+        elements[i].nativeElement.style.display = 'inline'
+        elements[i].nativeElement.style.left = event.clientX.toString() + 'px'
+        elements[i].nativeElement.style.top = event.clientY.toString() + 'px'
+        i = i + 1
+      }
+    }
+  }
+
+  mouseUp(){
+    if(this.queryElement !== undefined){
+      let elements = this.queryElement.toArray()
+
+      let i = 0;
+      while(i < 6){
+        elements[i].nativeElement.style.display = 'none'
+        i = i + 1
+      }
+    }
+  }
+
+  mousemove2(event :MouseEvent){
+    if(this.heartsvg !== undefined){
+      let svg :ElementRef = this.heartsvg
+
+      if(this.div !== undefined){
+        this.render.appendChild(this.div.nativeElement, svg.nativeElement)
+      }
+    }
+  }
+
+  mouseover(event :MouseEvent){
+    if(this.queryElement !== undefined){
+      if(!this.running){
+        this.running = true;
+
+        setTimeout(() => {
+          let i = this.counter % this.iteration
+          if(this.queryElement !== undefined){
+            let elements = this.queryElement?.toArray()
+            elements[i].nativeElement.style.left = event.clientX.toString() + "px"
+            elements[i].nativeElement.style.top = event.clientY.toString() + "px"
+            this.counter = this.counter + 1;
+          }
+          this.running = false;
+        }, 80)
+      }
+    }
+    else{
+      console.log('wrong')
+    }
+    clearTimeout(this.timer)
+
+    this.timer = setTimeout(()=>{
+      let i = 0;
+      if(this.queryElement !== undefined){
+      let elements = this.queryElement.toArray()
+      while(i < 6){
+        elements[i].nativeElement.style['animation-name'] = 'floatUp'
+        i = i + 1
+      }
+      }
+    }, 500)
+  }
+
+  moveMyName($event :any){
+    const mouseX = $event.clientX
+    const mouseY = $event.clientY
+    console.log($event.clientX, $event.clientY,this.cursor)
+    this.cursor.nativeElement.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`
+  }
+
+  loadMore(){
+    let params = {offset: this.comments.length , limit: this.limit}
+    this.commentService.getLimitedComments(this.postid, params).subscribe((comments) => {
+      this.comments = [...this.comments, ...comments]
+    })
+    console.log(this.comments)
+  }
+
+  submitComment(){
+    this.commentService.addComments({ postID: this.postid, comment: this.inputComment }).subscribe()
+    this.inputComment = ''
+  }
+
+  matchReactions(){
+    let userTokenString = localStorage.getItem('user')
+    let userToken = JSON.parse(userTokenString!)
+    let userid;
+
+    if(userToken !== null && userToken.uid !== null){
+      userid = userToken.uid
+    }
+    else{
+      throw Error('There is no user token')
+    }
+
+    const reactionsArr = this.post.reactions
+    const reactionsRecord = this.post.post.reactions
+
+    for(let reaction of reactionsArr){
+      this.userReactions[reaction.uid] = false;
+      let matchingObject = { "reactionID": reaction.uid, "userID": userid }
+      if(reactionsRecord.find((reaction :any) => reaction.reactionID === matchingObject.reactionID && reaction.userID === matchingObject.userID)){
+        this.userReactions[reaction.uid] = true
+      }
+    }
+  }
+
+  debug(){
+    this.matchReactions()
+  }
+
+  returnChallenge(){
+    this.router.navigate([`challenge/${this.post.post.challengeID}`])
+  }
 }

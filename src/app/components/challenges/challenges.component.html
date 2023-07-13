@@ -8,7 +8,7 @@
 <div class="wrapper">
     <div *ngFor="let challenge of showingChallenges" class="challenge">
       <img src="{{ challenge.imageURI }}" style="width: 100%;"/>
-      <h1><a [routerLink]="['/challenge', challenge.uid]" style='text-decoration: none;'>{{ challenge.title }}</a></h1>
+      <h1><a [routerLink]="['/challenge', challenge.uid]" style='text-decoration: none;'>{{ challenge.title | uppercase }}</a></h1>
       <p class="description" style='color: grey; font-style: italic; font-weight: bold;'>{{ challenge.description }}</p>
       <div>
         <div style='color: red; margin-bottom: 10px;'>

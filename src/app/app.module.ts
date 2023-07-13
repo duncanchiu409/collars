@@ -39,6 +39,8 @@ import { TimeToDaysPipe } from './time-to-days.pipe';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { imageDialog } from './components/dog-info/dog-info.component';
 import { MatExpansionModule } from '@angular/material/expansion'
+import { PostService } from './services/post.service';
+import { CommentsService } from './services/comments.service';
 
 @NgModule({
   declarations: [
@@ -75,7 +77,7 @@ import { MatExpansionModule } from '@angular/material/expansion'
     ImageCropperModule,
     MatExpansionModule
   ],
-  providers: [AuthService, ChallengeService, DogService, PostsService, ReactionsService],
+  providers: [AuthService, ChallengeService, DogService, PostsService, ReactionsService, PostService, CommentsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -53,10 +53,10 @@ export class ChallengesComponent implements OnInit {
   }
 
   renderChallenges(sort :string){
-    this.showingChallenges = []
     this.authService.refreshedIDToken().then(userAccessToken => {
       if(userAccessToken !== undefined){
         this.challengeService.getChallenges({sort: sort, userAccessToken: userAccessToken}).subscribe(resultChallenges => {
+          this.showingChallenges = []
           resultChallenges.forEach(challenge => {
             let tmp = new Challenge()
             if(tmp.parse_object(challenge) === null){
@@ -147,7 +147,6 @@ export class SubmitIdea{
   imageCropped(event: ImageCroppedEvent) {
     this.croppedImage = event.base64;
     console.log(event)
-    debugger
   }
   imageLoaded() {
     // show cropper
@@ -186,9 +185,7 @@ export class SubmitIdea{
   }
 
   clickSubmitButton() :void {
-    this.onSubmit()
-    debugger
-    this.dialogRef.close()
+    this.onSubmit().then(() => this.dialogRef.close())
   }
 
   async onSubmit() :Promise<void> {
@@ -209,9 +206,8 @@ export class SubmitIdea{
     let filePath = `challenges/${challengeRef.id}`
     let fileRef = ref(getStorage(), filePath)
     if(this.croppedImage !== null){
-      debugger
       try{
-        uploadString(fileRef, this.croppedImage, 'data_url');
+        await uploadString(fileRef, this.croppedImage, 'data_url');
       }
       catch(err){
         console.log(err)

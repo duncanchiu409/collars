@@ -27,7 +27,7 @@ export class TimeToDaysPipe implements PipeTransform {
       return dDisplay + h_added_zero + ":" + m_added_zero + ':' + s_added_zero;
     }
     else{
-      return "Invalid Value Parsed"
+      return "ENDED"
     }
   }
 

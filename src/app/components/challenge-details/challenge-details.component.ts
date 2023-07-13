@@ -43,17 +43,19 @@ export class ChallengeDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      this.id = params['id']
-    })
-    setTimeout(this.renderPosts, 3000)
+    setTimeout(() => {
+      this.route.params.subscribe((params) => {
+        this.id = params['id']
+      })
+      this.renderPosts()
+    },500)
   }
 
   getReactions(){
     this.reactionService.getReactions().subscribe(
       (reactions) => {
         reactions.forEach(
-          (reaction) => {
+          (reaction :any) => {
             let obj = new Reaction()
             if(obj.createReactionFromObject(reaction)){
               obj.createReactionFromObject(reaction)
@@ -61,9 +63,7 @@ export class ChallengeDetailsComponent implements OnInit {
             }
             else{
               throw Error('Crash')
-            }
-          }
-        )
+            }})
         this.posts.forEach(
           (post) => {
             this.emojiURIArray[post.uid]=[]
@@ -71,11 +71,7 @@ export class ChallengeDetailsComponent implements OnInit {
               let tmpDict = this.emojiMap.find((reaction)=>reaction.uid === key)
               if(tmpDict === undefined) throw Error
               else this.emojiURIArray[post.uid].push(tmpDict.imageURI)
-            }
-          }
-        )
-      }
-    )
+            }})})
   }
 
   renderPosts(){
@@ -97,42 +93,18 @@ export class ChallengeDetailsComponent implements OnInit {
     // render in html
   }
 
-  getChallengeID(){
-    this.route.params.subscribe((params) => {
-      if(params['id']){
-        this.id = params['id']
-      }
-    })
- }
-
   getChallenge(){
     this.challengeService.getChallenge(this.id).subscribe((challenge :any) => {
       this.challenge.parse_object(challenge)
     })
   }
 
-  getPosts(){
-    let params = { sort: '', userAccessToken: ''}
-    this.authService.refreshedIDToken().then(_ => {
-      params.sort = this.sortingLogic
-      if(_ !== undefined){
-        params.userAccessToken = _
-        return params
-      }
-      else{
-        throw Error('Missing User Authentication Token ')
-      }
-    }).then(_ => this.postsService.getPosts(this.id, _).subscribe(_ =>
-      _.forEach(post => {
-        let obj = new Post()
-        if(obj.createPostsfromPosts(post)){
-          this.posts.push(obj)
-        }
-      })))
-  }
-
   logout(){
     this.authService.SignOut()
+  }
+
+  returnChallenges(){
+    this.router.navigate(['challenges'])
   }
 
   changeSortingLogic(logic :string){
@@ -150,9 +122,5 @@ export class ChallengeDetailsComponent implements OnInit {
     else{
       this.dropDown = false
     }
-  }
-
-  debugButton(){
-    this.renderPosts()
   }
 }
