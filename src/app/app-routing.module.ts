@@ -18,11 +18,11 @@ const routes: Routes = [
   { path: 'welcome', component: WelcomeComponent},
   { path: 'sign-in', component: SignInComponent },
   { path: 'register-user', component: SignUpComponent },
-  { path: 'challenges', component: ChallengesComponent, canActivate:[AuthGuard] },
-  { path: 'dog-info', component: DogInfoComponent, canActivate:[AuthGuard]},
+  { path: 'challenges', component: ChallengesComponent, canActivate:[AuthGuard], },
+  { path: 'dog-info', component: DogInfoComponent, canActivate:[AuthGuard], },
   { path: 'forget-password', component: ForgetPasswordComponent},
-  { path: 'challenge/:id', component: ChallengeDetailsComponent},
-  { path: 'post/:id', component: PostComponent }
+  { path: 'challenge/:id', component: ChallengeDetailsComponent, canActivate:[AuthGuard], },
+  { path: 'post/:id', component: PostComponent, canActivate:[AuthGuard], },
 ];
 
 @NgModule({

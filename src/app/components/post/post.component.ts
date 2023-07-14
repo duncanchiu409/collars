@@ -2,7 +2,7 @@ import { Component, ElementRef, HostListener, OnInit, QueryList, ViewChild, View
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommentsService } from 'src/app/services/comments.service';
 import { PostService } from 'src/app/services/post.service';
-import { map, forkJoin, switchMap, tap } from 'rxjs';
+import { map, forkJoin, switchMap, tap, of } from 'rxjs';
 import { ReactionsService } from 'src/app/shared/services/reactions.service';
 
 @Component({
@@ -42,13 +42,19 @@ export class PostComponent implements OnInit {
     this.route.params.pipe(
       tap(postid => this.postid = postid['id']),
       switchMap( postid => this.postService.getPost(postid['id']) )
-    ).subscribe( post => this.post = post )
+    ).subscribe( post => {
+      this.post = post
+      this.matchReactions()
+    })
     this.loadMore()
   }
 
   clickReaction(emojiURI :string){
-    this.reactionService.reactEmoji({ reactionsID: emojiURI, postID: this.postid }).subscribe((result) => {
-      console.log(result)
+    this.reactionService.reactEmoji({ reactionsID: emojiURI, postID: this.postid }).pipe(
+      switchMap( result => this.postService.getPost(this.postid) )
+    ).subscribe((post) => {
+      this.post = post
+      this.matchReactions()
     })
   }
 
@@ -137,7 +143,22 @@ export class PostComponent implements OnInit {
   }
 
   submitComment(){
-    this.commentService.addComments({ postID: this.postid, comment: this.inputComment }).subscribe()
+    this.commentService.addComments({ postID: this.postid, comment: this.inputComment }).pipe(
+      switchMap( result => {
+        if(this.comments.length === 0 || this.comments.length % this.limit !== 0){
+          let params = { offset: this.comments.length, limit: this.limit }
+          this.commentService.getLimitedComments(this.postid, params).pipe(
+            map(comments => {
+              this.comments = [...this.comments, ...comments]
+            })
+          )
+          return of(this.comments)
+        }
+        else{
+          return of(result)
+        }
+      })
+    ).subscribe()
     this.inputComment = ''
   }
 

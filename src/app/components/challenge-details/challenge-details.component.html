@@ -15,7 +15,7 @@
       THE RULES<br> {{ challenge.description }}
     </div>
   </div>
-  <div class='post-wrapper'>
+  <div class='post-wrapper' [style.height]='postsObject.length !== 0 ? "auto" : "100vh"'>
     <div *ngFor = 'let tmpObj of postsObject' class='post'>
       <div class='container'>
         <img src="{{ tmpObj.post.imageURI }}">
