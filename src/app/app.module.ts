@@ -41,6 +41,7 @@ import { imageDialog } from './components/dog-info/dog-info.component';
 import { MatExpansionModule } from '@angular/material/expansion'
 import { PostService } from './services/post.service';
 import { CommentsService } from './services/comments.service';
+import { SubmitChallenge } from './components/challenge-details/challenge-details.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { CommentsService } from './services/comments.service';
     ProfileComponent,
     PostComponent,
     TimeToDaysPipe,
-    imageDialog
+    imageDialog,
+    SubmitChallenge
   ],
   imports: [
     BrowserModule,
