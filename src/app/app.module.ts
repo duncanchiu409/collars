@@ -31,16 +31,16 @@ import { NavButtonComponent } from './components/nav-button/nav-button.component
 import { SettingsComponent } from './components/settings/settings.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { PostComponent } from './components/post/post.component';
-import { PostsService } from './shared/shared/services/posts.service';
+import { PostsService } from './shared/services/posts.service';
 import { ReactionsService } from './shared/services/reactions.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-import { TimeToDaysPipe } from './time-to-days.pipe';
+import { TimeToDaysPipe } from './shared/pipes/time-to-days.pipe';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { imageDialog } from './components/dog-info/dog-info.component';
 import { MatExpansionModule } from '@angular/material/expansion'
-import { PostService } from './services/post.service';
-import { CommentsService } from './services/comments.service';
+import { PostService } from './shared/services/post.service';
+import { CommentsService } from './shared/services/comments.service';
 import { SubmitChallenge } from './components/challenge-details/challenge-details.component';
 
 @NgModule({

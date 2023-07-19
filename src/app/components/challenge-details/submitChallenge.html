@@ -1,0 +1,23 @@
+<div class="container">
+  <div class="image-container">
+    <input type="file" (change)="fileUpload($event)">
+    <img [src]="imageDataURL">
+  </div>
+
+  <div class="user-information">
+    <img [src]='userDogInformation.dogCompressedImageURI'>
+    <div class='user-information-username'>
+      <p>{{ userDogInformation.dogName }}</p>
+      <p>{{ userDogInformation.dogBreed }}</p>
+    </div>
+  </div>
+  <div class="caption-container">
+    <textarea type="text" placeholder="Add a caption or explain how hard it was to get your dog in this photo..." style="border: none; height: 60px; width: 100%;" (change)='changeTextArea($event)'></textarea>
+  </div>
+
+  <div class="confirmation-buttons">
+    <label class="confirmation-buttons-description">Enter <span style="color: orange;">Funny Hats</span> Challenge?</label>
+    <button mat-dialog-close (click)='sendPost()' class="yes-button">yes</button>
+    <button mat-dialog-close class="no-button">no</button>
+  </div>
+</div>

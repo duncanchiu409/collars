@@ -1,0 +1,61 @@
+.container{
+  display: grid;
+  height: 100%;
+  grid-template-rows: auto auto 1fr auto;
+  grid-gap: 15px;
+}
+
+.image-container{
+  display: grid;
+}
+
+.image-container img{
+  width: 700px;
+}
+
+.confirmation-buttons > button{
+  width: 100%;
+}
+
+.user-information{
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+.user-information img{
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.user-information-username{
+  display: grid;
+  align-items: center;
+}
+
+.user-information-username p{
+  margin: 0px;
+  margin-left: 15px;
+}
+
+.confirmation-buttons{
+  display: grid;
+  grid-gap: 20px;
+}
+
+.yes-button{
+  background-color: orange;
+  color: white;
+  border: none;
+}
+
+.no-button{
+  background-color: black;
+  color: white;
+  border: none;
+}
+
+.confirmation-buttons-description{
+  justify-self: center;
+  font-weight: bold;
+}

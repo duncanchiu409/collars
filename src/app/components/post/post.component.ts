@@ -4,6 +4,7 @@ import { CommentsService } from 'src/app/services/comments.service';
 import { PostService } from 'src/app/services/post.service';
 import { map, forkJoin, switchMap, tap, of } from 'rxjs';
 import { ReactionsService } from 'src/app/shared/services/reactions.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'app-post',
@@ -25,6 +26,8 @@ export class PostComponent implements OnInit {
   public offset :number;
   public limit :number;
 
+  public userAccessToken :string = ''
+
   public userReactions :{[key:string] :boolean} = {}
 
   @ViewChild('heartgenerator') div? :ElementRef;
@@ -33,25 +36,39 @@ export class PostComponent implements OnInit {
   @ViewChild('cursor') cursor :any;
   @ViewChildren('heartcursortrailer') queryElement? :QueryList<ElementRef>
 
-  constructor(private postService :PostService, private route :ActivatedRoute, private commentService :CommentsService, private reactionService :ReactionsService, private render :Renderer2, private router :Router) {
+  constructor(private postService :PostService, private route :ActivatedRoute, private commentService :CommentsService, private reactionService :ReactionsService, private render :Renderer2, private router :Router, private authService :AuthService) {
     this.offset = 0;
     this.limit = 5;
   }
 
   ngOnInit(): void {
-    this.route.params.pipe(
-      tap(postid => this.postid = postid['id']),
-      switchMap( postid => this.postService.getPost(postid['id']) )
-    ).subscribe( post => {
-      this.post = post
-      this.matchReactions()
-    })
-    this.loadMore()
+    this.authService.refreshedIDToken().then( token => {
+      if(token !== undefined){
+        this.userAccessToken = token
+        this.route.params.pipe(
+          tap(postid => this.postid = postid['id']),
+          switchMap(postid => {
+            const params = {userAccessToken: this.userAccessToken}
+            return this.postService.getPost(postid['id'], params)
+          })
+        ).subscribe( post => {
+          this.post = post
+          this.matchReactions()
+        })
+        this.loadMore()
+      }
+      else{
+        console.error('User access token missing in afAuth.')
+      }
+    } )
   }
 
   clickReaction(emojiURI :string){
     this.reactionService.reactEmoji({ reactionsID: emojiURI, postID: this.postid }).pipe(
-      switchMap( result => this.postService.getPost(this.postid) )
+      switchMap( result => {
+        const params = { userAccessToken: this.userAccessToken }
+        return this.postService.getPost(this.postid, params)
+      })
     ).subscribe((post) => {
       this.post = post
       this.matchReactions()
@@ -145,7 +162,7 @@ export class PostComponent implements OnInit {
   submitComment(){
     this.commentService.addComments({ postID: this.postid, comment: this.inputComment }).pipe(
       switchMap( result => {
-        if(this.comments.length === 0 || this.comments.length % this.limit !== 0){
+        if(this.comments.length !== 0 || this.comments.length % this.limit !== 0){
           let params = { offset: this.comments.length, limit: this.limit }
           this.commentService.getLimitedComments(this.postid, params).pipe(
             map(comments => {

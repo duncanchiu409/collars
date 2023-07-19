@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, Query } from '@angular/fire/compat/firestore';
-import { Post } from '../../classes/Post';
+import { Post } from '../classes/Post';
 import { of } from 'rxjs'
 import { catchError, tap } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { getFunctions, connectFunctionsEmulator, httpsCallableFromURL, httpsCallable, HttpsCallable } from '@angular/fire/functions';
 import { AngularFireAuth } from '@angular/fire/compat/auth'

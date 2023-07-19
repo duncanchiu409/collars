@@ -4,7 +4,7 @@ import { tap, switchMap, map, concat, of } from 'rxjs'
 import { addDoc, DocumentSnapshot, getFirestore, collection, setDoc } from '@firebase/firestore';
 import { Challenge } from 'src/app/shared/classes/Challenge';
 import { ChallengeService } from 'src/app/shared/services/challenge.service';
-import { PostsService } from 'src/app/shared/shared/services/posts.service';
+import { PostsService } from 'src/app/shared/services/posts.service';
 import { Post } from '../../shared/classes/Post'
 import { HttpsCallable } from 'firebase/functions';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -152,6 +152,7 @@ export class SubmitChallenge{
   public userDogInformation :any
   public postImageRef :any;
   public postRef :any;
+  public postCaption :string = '';
 
   constructor(private dogService :DogService, private authService :AuthService, private reactionService :ReactionsService, @Inject(MAT_DIALOG_DATA) public data: {challengeID: string}){}
 
@@ -160,19 +161,13 @@ export class SubmitChallenge{
       userAccessToken => {
         if(userAccessToken !== undefined){
           this.userAccessToken = userAccessToken
+          this.dogService.getDogInfo(this.userAccessToken).subscribe(result => {this.userDogInformation = result})
         }
         else{
           throw Error;
         }
       }
     )
-
-    setTimeout(() => {
-      this.dogService.getDogInfo(this.userAccessToken).subscribe( result => {
-        this.userDogInformation = result
-      })
-    }
-    , 1000)
   }
 
   fileUpload(e :any){
@@ -193,7 +188,7 @@ export class SubmitChallenge{
       patCounter: 0,
       posterID: this.authService.userData.uid,
       reactions: [],
-      title: 'testing 1',
+      title: this.postCaption,
       uid: '',
     }
 
@@ -236,5 +231,11 @@ export class SubmitChallenge{
         reactionsCounter: reactionsCounter,
       }, {merge: true})
     })
+  }
+
+  changeTextArea(e :any){
+    if(e.target?.value !== undefined || e.target?.value !== null || e.target?.value !== ''){
+      this.postCaption = e.target?.value
+    }
   }
 }
