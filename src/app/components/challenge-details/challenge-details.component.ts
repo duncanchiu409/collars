@@ -154,7 +154,7 @@ export class SubmitChallenge{
   public postRef :any;
   public postCaption :string = '';
 
-  constructor(private dogService :DogService, private authService :AuthService, private reactionService :ReactionsService, @Inject(MAT_DIALOG_DATA) public data: {challengeID: string}){}
+  constructor(private dogService :DogService, private authService :AuthService, private reactionService :ReactionsService, private postsService :PostsService, @Inject(MAT_DIALOG_DATA) public data: {challengeID: string}){}
 
   ngOnInit() :void{
     this.authService.refreshedIDToken().then(
@@ -189,48 +189,57 @@ export class SubmitChallenge{
       posterID: this.authService.userData.uid,
       reactions: [],
       title: this.postCaption,
+      reactionsCounter: {},
       uid: '',
     }
 
-    try{
-      this.postRef = await addDoc(collection(getFirestore(), 'posts'), challenge)
-
-      let postImagePath = `posts/${this.postRef.id}`
-      this.postImageRef = ref(getStorage(), postImagePath)
-
-      if(this.imageDataURL !== null){
-        try{
-          await uploadString(this.postImageRef, this.imageDataURL, 'data_url');
-        }
-        catch(err){
-          console.log(err)
-        }
-      }
-      else{
-        throw Error('POST post image failed: Failed to submit ImageRef')
-      }
-
-
-    }
-    catch(err){
-      console.log(err)
+    if(this.userAccessToken !== ''){
+      this.postsService.addPost(this.userAccessToken, challenge).pipe(
+        switchMap(writingTime => {
+          
+        })
+      ).subscribe()
     }
 
-    this.reactionService.getReactions().subscribe(async (reactionsObjects) => {
-      let downloadURI = ''
-      downloadURI = await getDownloadURL(this.postImageRef)
+    // try{
+    //   this.postRef = await addDoc(collection(getFirestore(), 'posts'), challenge)
 
-      const reactionsCounter :{[key :string] :Number} = {}
-      reactionsObjects.forEach((reaction :any) => {
-        reactionsCounter[reaction.uid] = 0;
-      })
+    //   let postImagePath = `posts/${this.postRef.id}`
+    //   this.postImageRef = ref(getStorage(), postImagePath)
 
-      let snapshot = await setDoc(this.postRef, {
-        uid: this.postRef.id,
-        imageURI: downloadURI,
-        reactionsCounter: reactionsCounter,
-      }, {merge: true})
-    })
+    //   if(this.imageDataURL !== null){
+    //     try{
+    //       await uploadString(this.postImageRef, this.imageDataURL, 'data_url');
+    //     }
+    //     catch(err){
+    //       console.log(err)
+    //     }
+    //   }
+    //   else{
+    //     throw Error('POST post image failed: Failed to submit ImageRef')
+    //   }
+
+
+    // }
+    // catch(err){
+    //   console.log(err)
+    // }
+
+    // this.reactionService.getReactions().subscribe(async (reactionsObjects) => {
+    //   let downloadURI = ''
+    //   downloadURI = await getDownloadURL(this.postImageRef)
+
+    //   const reactionsCounter :{[key :string] :Number} = {}
+    //   reactionsObjects.forEach((reaction :any) => {
+    //     reactionsCounter[reaction.uid] = 0;
+    //   })
+
+    //   let snapshot = await setDoc(this.postRef, {
+    //     uid: this.postRef.id,
+    //     imageURI: downloadURI,
+    //     reactionsCounter: reactionsCounter,
+    //   }, {merge: true})
+    // })
   }
 
   changeTextArea(e :any){

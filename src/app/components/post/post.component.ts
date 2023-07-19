@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener, OnInit, QueryList, ViewChild, ViewChildren, Renderer2 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommentsService } from 'src/app/services/comments.service';
-import { PostService } from 'src/app/services/post.service';
+import { CommentsService } from '../../shared/services/comments.service';
+import { PostService } from '../../shared/services/post.service';
 import { map, forkJoin, switchMap, tap, of } from 'rxjs';
 import { ReactionsService } from 'src/app/shared/services/reactions.service';
 import { AuthService } from 'src/app/shared/services/auth.service';

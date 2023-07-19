@@ -41,6 +41,15 @@ constructor(private angularFirestore :AngularFirestore, private authService :Aut
       catchError(this.handleError('sendUserToken'))
     )
   }
+  
+  addPost(userAccessToken :string, body :any){
+    let url = this.url + '/'
+    body['userAccessToken'] = userAccessToken;
+    return this.http.post(url, body).pipe(
+      tap(_ => console.log(_)),
+      catchError(this.handleError('Add post'))
+    )
+  }
 
   connectToEmulator(){
     let functionInstance = getFunctions()
