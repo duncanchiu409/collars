@@ -24,7 +24,7 @@ export class CommentsService {
   }
 
   getLimitedComments(postid :string, params :any){
-    let url = this.url + '/testing/' + postid
+    let url = this.url + '/custom/' + postid
 
     return this.http.get<any>(url, {params: params}).pipe(
       tap(_ => console.log(_)),

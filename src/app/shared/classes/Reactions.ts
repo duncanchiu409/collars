@@ -9,24 +9,24 @@ export class Reaction{
     this.imageURI = ''
   }
 
-  createReactionFromObject(obj :any){
-    if(obj.uid == undefined){
+  parse_full_object(object :any) :boolean{
+    if(object.uid == undefined){
       return false
     }
     else{
-      this.uid = obj.uid
+      this.uid = object.uid
     }
-    if(obj.title == undefined){
+    if(object.title == undefined){
       return false
     }
     else{
-      this.title = obj.title
+      this.title = object.title
     }
-    if(obj.emojiURI == undefined){
+    if(object.emojiURI == undefined){
       return false
     }
     else{
-      this.imageURI = obj.emojiURI
+      this.imageURI = object.emojiURI
     }
     return true
   }

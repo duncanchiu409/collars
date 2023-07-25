@@ -12,6 +12,7 @@ import { setDoc } from '@firebase/firestore';
 import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper'
 import { NgxImageCompressService } from 'ngx-image-compress'
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-challenges',
@@ -19,33 +20,42 @@ import { AuthService } from 'src/app/shared/services/auth.service';
   styleUrls: ['./challenges.component.css']
 })
 export class ChallengesComponent implements OnInit {
-  public challenges :Challenge[] = []
   public showingChallenges :Challenge[] = []
   public sortingLogic :string = ''
-  public submitIdeaChallenge :Challenge
+  public userAccessToken :string = ''
+  public submitIdeaChallenge :Challenge;
 
-  constructor(public challengeService :ChallengeService, private dialog :MatDialog, private authService :AuthService) {
+  constructor(public challengeService :ChallengeService, private dialog :MatDialog, private authService :AuthService, private router :Router) {
+    this.sortingLogic = 'UPCOMING'
     this.submitIdeaChallenge = new Challenge()
-    this.submitIdeaChallenge.get_sumbit_idea("submit_idea")
+    this.submitIdeaChallenge.get_sumbit_idea()
   }
 
   ngOnInit(): void {
-    this.sortingLogic = 'upcoming'
+    this.authService.refreshedIDToken().then(userAccessToken => {
+      if(userAccessToken !== undefined){
+        this.userAccessToken = userAccessToken
+        this.renderChallenges(this.sortingLogic)
+      }
+      else{
+        console.error('userAccessToken is not present')
+        this.router.navigate(['welcome'])
+      }
+    })
   }
 
   sortingButton(logic :string){
-    if(logic === 'upcoming'){
+    if(logic === 'UPCOMING'){
       this.renderChallenges('UPCOMING')
-      this.sortingLogic = 'upcoming'
+      this.sortingLogic = 'UPCOMING'
     }
-    else if(logic === 'active'){
+    else if(logic === 'ACTIVE'){
       this.renderChallenges('ACTIVE')
-      this.sortingLogic = 'active'
+      this.sortingLogic = 'ACTIVE'
     }
-    else if(logic === 'completed'){
-      console.log('Crazy')
+    else if(logic === 'COMPLETED'){
       this.renderChallenges('COMPLETED')
-      this.sortingLogic = 'completed'
+      this.sortingLogic = 'COMPLETED'
     }
     else{
       console.log("Invalid sorting logic :')")
@@ -53,68 +63,16 @@ export class ChallengesComponent implements OnInit {
   }
 
   renderChallenges(sort :string){
-    this.authService.refreshedIDToken().then(userAccessToken => {
-      if(userAccessToken !== undefined){
-        this.challengeService.getChallenges({sort: sort, userAccessToken: userAccessToken}).subscribe(resultChallenges => {
-          this.showingChallenges = []
-          resultChallenges.forEach(challenge => {
-            let tmp = new Challenge()
-            if(tmp.parse_object(challenge) === null){
-              console.log('something wrong in parsing',challenge)
-            }
-            this.showingChallenges.push(JSON.parse(JSON.stringify(tmp)))
-        })
-      })}
-      else{
-        console.log('UserAccessToken returned',userAccessToken)
-      }
+    this.challengeService.getChallenges({sort: sort, userAccessToken: this.userAccessToken}).subscribe(resultChallenges => {
+      this.showingChallenges = []
+      resultChallenges.forEach(challenge => {
+        let tmp = new Challenge()
+        if(tmp.parse_full_object(challenge) === null){
+          console.log('something wrong in parsing',challenge)
+        }
+        this.showingChallenges.push(tmp)
     })
-  }
-
-  sortUpComing() :void{
-    // if(this.sortingLogic === 'upcoming'){
-    //   return
-    // }
-
-    this.sortingLogic = 'upcoming'
-    this.showingChallenges = this.challenges.filter((challenge :Challenge) => {
-      if((challenge.startDate - new Date().getTime()/1000) >= 0){
-        return true
-      }
-      else{
-        return false
-      }
-    })
-  }
-
-  sortActive() :void{
-    // if(this.sortingLogic === 'active'){
-    //   return
-    // }
-
-    this.sortingLogic = 'active'
-    this.showingChallenges = this.challenges.filter((challenge :Challenge) => {
-      if(((challenge.startDate - new Date().getTime()/1000) < 0) && (challenge.endDate - new Date().getTime()/1000) >= 0){
-        return true
-      }
-      else{
-        return false
-      }
-    })
-  }
-
-  sortCompleted() :void{
-    let user_token_in_string :string | null = localStorage.getItem('user')
-    let user_token_in_json = user_token_in_string !== null ? JSON.parse(user_token_in_string) : null
-
-    if(user_token_in_string !== null){
-      this.sortingLogic = 'completed'
-      this.showingChallenges = this.challenges.filter(challenge => challenge.userID.includes(user_token_in_json.uid))
-    }
-    else{
-      console.log('Hmm, nothing happened')
-    }
-  }
+  })}
 
   openDialog() :void{
     this.dialog.open(SubmitIdea,{

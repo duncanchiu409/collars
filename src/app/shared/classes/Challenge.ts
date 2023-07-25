@@ -1,5 +1,3 @@
-import { Timestamp } from '@firebase/firestore';
-
 export class Challenge {
   public uid :string;
   public title :string;
@@ -23,20 +21,19 @@ export class Challenge {
     this.postID = []
   }
 
-  get_sumbit_idea(name :string) :boolean {
-    if(name === 'submit_idea'){
-      this.uid = '0'
-      this.title = 'Submit A Challenge Idea'
-      this.description = 'Fill out below about your awesome Collars challenge idea'
-      this.imageURI = 'https://dummyimage.com/250x250/000/fff'
-      return true;
-    }
-    else{
-      return false
-    }
+  get_sumbit_idea() :void{
+    this.uid = '0'
+    this.title = 'Submit A Challenge Idea'
+    this.description = 'Fill out below about your awesome Collars challenge idea'
+    this.imageURI = 'https://dummyimage.com/250x250/000/fff'
+    this.entriesCounter = 0
+    this.startDate = 0
+    this.endDate = 0
+    this.userID = []
+    this.postID = []
   }
 
-  parse_object(challenge :any) :boolean {
+  parse_full_object(challenge :any) :boolean {
     if(challenge.uid == undefined){
       return false;
     }else{

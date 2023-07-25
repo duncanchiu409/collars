@@ -5,6 +5,7 @@ import { Challenge } from '../classes/Challenge';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, retry, tap } from 'rxjs/operators';
 import { environment } from 'src/app/environments/environment';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -12,33 +13,33 @@ import { environment } from 'src/app/environments/environment';
 export class ChallengeService {
   private url :string;
 
+  private httpOptions = {
+    headers: new HttpHeaders({'Content-Type': 'application/json'})
+  }
+
   constructor(private http :HttpClient, private angularFirestore :AngularFirestore) {
     this.url = environment.apiURL + '/challenges'
   }
 
   getChallenges(params :any){
-    let url = this.url + '/testing'
+    let url = this.url + '/custom'
     return this.http.get<Challenge[]>(url, {params: params}).pipe(
       tap(_ => console.log(_)),
-      catchError(this.handleError<Challenge[]>('NEW GET A CHALLENGE'))
-    )
-  }
-
-  newGetChallenges(params :any){
-    let url = this.url + '/testing'
-    return this.http.get(url, {params: params}).pipe(
-      tap(_ => console.log(_)),
-      catchError(this.handleError<Challenge>('NEW GET A CHALLENGE'))
+      catchError(this.handleError<Challenge[]>('GET CHALLENGE'))
     )
   }
 
   addChallenges(challenge :Challenge){
-    return this.angularFirestore.collection<Challenge>('challenges').add(challenge).catch(this.handleError('POST Challenge'))
+    let url = this.url + '/'
+    return this.http.post(url, challenge, this.httpOptions).pipe(
+      tap(_ => console.log(_)),
+      catchError(this.handleError('POST ONE CHALLENGE'))
+    )
   }
 
   getChallenge(challengeID :string){
     let url = this.url + '/' + challengeID
-    return this.http.get(url).pipe(
+    return this.http.get(url, this.httpOptions).pipe(
       tap(_ => console.log(_)),
       catchError(this.handleError<Challenge>('GET A CHALLENGE'))
     )

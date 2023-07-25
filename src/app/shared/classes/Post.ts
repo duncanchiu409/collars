@@ -23,51 +23,51 @@ export class Post {
     this.reactionsCounter = {}
   }
 
-  createPostsfromPosts(post :any){
-    if(post.title !== undefined){
-      this.title = post.title
+  parse_full_object(object :any) :boolean{
+    if(object.title !== undefined){
+      this.title = object.title
     }
     else{
       return false
     }
-    if(post.reactions !== undefined){
-      this.reactions = post.reactions
+    if(object.reactions !== undefined){
+      this.reactions = object.reactions
     }
     else{
       return false
     }
-    if(post.patCounter !== undefined){
-      this.patCounter = post.patCounter
+    if(object.patCounter !== undefined){
+      this.patCounter = object.patCounter
     }
     else{
       return false
     }
-    if(post.imageURI !== undefined){
-      this.imageURI = post.imageURI
+    if(object.imageURI !== undefined){
+      this.imageURI = object.imageURI
     }
     else{
       return false
     }
-    if(post.posterID !== undefined){
-      this.posterID = post.posterID
+    if(object.posterID !== undefined){
+      this.posterID = object.posterID
     }
     else{
       return false
     }
-    if(post.comments !== undefined){
-      this.comments = post.comments
+    if(object.comments !== undefined){
+      this.comments = object.comments
     }
     else{
       return false
     }
-    if(post.uid !== undefined){
-      this.uid = post.uid
+    if(object.uid !== undefined){
+      this.uid = object.uid
     }
     else{
       return false
     }
-    if(post.reactionsCounter !== undefined){
-      this.reactionsCounter = post.reactionsCounter
+    if(object.reactionsCounter !== undefined){
+      this.reactionsCounter = object.reactionsCounter
     }
     else{
       return false

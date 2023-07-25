@@ -5,6 +5,7 @@ import { PostService } from '../../shared/services/post.service';
 import { map, forkJoin, switchMap, tap, of } from 'rxjs';
 import { ReactionsService } from 'src/app/shared/services/reactions.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { Comment } from '../../shared/classes/Comment'
 
 @Component({
   selector: 'app-post',
@@ -15,7 +16,7 @@ export class PostComponent implements OnInit {
   public postid :string = '';
   public post :any = {};
   public inputComment :string = ''
-  public comments :any = []
+  public comments :Comment[] = []
   public cursorChange :boolean = true;
   public timer :any;
 
@@ -23,7 +24,6 @@ export class PostComponent implements OnInit {
   public iteration :number = 6
   public running :boolean = false;
 
-  public offset :number;
   public limit :number;
 
   public userAccessToken :string = ''
@@ -37,7 +37,6 @@ export class PostComponent implements OnInit {
   @ViewChildren('heartcursortrailer') queryElement? :QueryList<ElementRef>
 
   constructor(private postService :PostService, private route :ActivatedRoute, private commentService :CommentsService, private reactionService :ReactionsService, private render :Renderer2, private router :Router, private authService :AuthService) {
-    this.offset = 0;
     this.limit = 5;
   }
 
@@ -52,15 +51,17 @@ export class PostComponent implements OnInit {
             return this.postService.getPost(postid['id'], params)
           })
         ).subscribe( post => {
+          console.log(post)
           this.post = post
           this.matchReactions()
         })
-        this.loadMore()
+        this.loadMoreComments()
       }
       else{
-        console.error('User access token missing in afAuth.')
+        console.error('Missing userAccessToken')
+        this.router.navigate(['welcome'])
       }
-    } )
+    })
   }
 
   clickReaction(emojiURI :string){
@@ -151,12 +152,16 @@ export class PostComponent implements OnInit {
     this.cursor.nativeElement.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`
   }
 
-  loadMore(){
+  loadMoreComments(){
     let params = {offset: this.comments.length , limit: this.limit}
     this.commentService.getLimitedComments(this.postid, params).subscribe((comments) => {
-      this.comments = [...this.comments, ...comments]
+      console.log(comments)
+      comments.forEach((comment :any) => {
+        let element = new Comment()
+        element.parse_full_object(comment)
+        this.comments.push(element)
+      })
     })
-    console.log(this.comments)
   }
 
   submitComment(){

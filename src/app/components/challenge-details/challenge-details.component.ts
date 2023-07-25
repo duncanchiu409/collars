@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { tap, switchMap, map, concat, of } from 'rxjs'
+import { tap, switchMap, map, concat, of, forkJoin } from 'rxjs'
 import { addDoc, DocumentSnapshot, getFirestore, collection, setDoc } from '@firebase/firestore';
 import { Challenge } from 'src/app/shared/classes/Challenge';
 import { ChallengeService } from 'src/app/shared/services/challenge.service';
@@ -19,6 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { DogService } from 'src/app/shared/services/dog.service';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { getDownloadURL, getStorage, ref, uploadString } from 'firebase/storage';
+import { PostCustom } from '../../shared/classes/PostCustom'
 
 @Component({
   selector: 'app-challenge-details',
@@ -28,19 +29,17 @@ import { getDownloadURL, getStorage, ref, uploadString } from 'firebase/storage'
 export class ChallengeDetailsComponent implements OnInit {
   public id :string;
   public challenge :Challenge;
-  public posts :Post[];
   public emojiMap :Reaction[];
   public emojiURIArray :{[key: string]:string[]}
   public sortingLogic :string;
   public params :{[key: string]:string}
-  public postsObject :any[];
+  public postsObject :PostCustom[];
 
   public dropDown = false;
 
   constructor(private challengeService :ChallengeService, private route :ActivatedRoute, private postsService :PostsService, private angularFire :AngularFireAuth, private reactionService :ReactionsService, private authService :AuthService, public router :Router, public dialog :MatDialog) {
     this.id = ''
     this.challenge = new Challenge()
-    this.posts = []
     this.emojiMap = []
     this.sortingLogic = 'ALL'
     this.emojiURIArray = {}
@@ -49,13 +48,42 @@ export class ChallengeDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.route.params.subscribe((params) => {
-        this.id = params['id']
-      })
-      this.getChallenge()
-      this.renderPosts()
-    },500)
+    this.authService.refreshedIDToken().then(userAccessToken => {
+      if(userAccessToken !== undefined){
+        this.params['userAccessToken'] = userAccessToken;
+        this.route.params.pipe(
+          tap(params => {
+            this.id = params['id']
+          }),
+          switchMap(params => {
+            return forkJoin(
+              this.challengeService.getChallenge(this.id),
+              this.postsService.getPosts(this.id, this.params)
+            )
+          })
+        ).subscribe(([challenge, posts]) => {
+          this.challenge = new Challenge()
+          if(!this.challenge.parse_full_object(challenge)){
+            console.error('Invalid parse Challenge in ngOnInit')
+          }
+    
+          posts.forEach( post => {
+            let element = new PostCustom()
+            if(element.parse_full_object(post)){
+              this.postsObject.push(element)
+            }
+            else{
+              console.error('Invalid parse PostCustom in ngOnInit')
+            }
+          })
+          this.getReactions()
+        })
+      }
+      else{
+        console.error('Missing userAccessToken')
+        this.router.navigate(['welcome'])
+      }
+    })
   }
 
   getReactions(){
@@ -64,45 +92,35 @@ export class ChallengeDetailsComponent implements OnInit {
         reactions.forEach(
           (reaction :any) => {
             let obj = new Reaction()
-            if(obj.createReactionFromObject(reaction)){
-              obj.createReactionFromObject(reaction)
+            if(obj.parse_full_object(reaction)){
               this.emojiMap.push(obj)
             }
             else{
-              throw Error('Crash')
+              console.error('Invalid parse Reaction in getReactions')
             }})
-        this.posts.forEach(
-          (post) => {
+        this.postsObject.forEach(
+          (object) => {
+            const post = object.post
             this.emojiURIArray[post.uid]=[]
             for(let key in post.reactionsCounter){
               let tmpDict = this.emojiMap.find((reaction)=>reaction.uid === key)
-              if(tmpDict === undefined) throw Error
+              if(tmpDict === undefined) console.error('Mismatch Reaction in getReactions')
               else this.emojiURIArray[post.uid].push(tmpDict.imageURI)
             }})})
   }
 
   renderPosts(){
-    // refresh token
-    // getNewPostsService()
-    //
-    this.authService.refreshedIDToken().then((_) => {
-      if(_ !== undefined){
-        this.params['userAccessToken'] = _
-        this.postsService.getPosts(this.id, this.params).subscribe((result) => {
-          this.postsObject = []
-          result.forEach(obj => this.postsObject.push(obj))
-        })
-      }
-      else{
-        console.log("Token is not present")
-      }
-    }).then(() => console.log(this.postsObject))
-    // render in html
-  }
-
-  getChallenge(){
-    this.challengeService.getChallenge(this.id).subscribe((challenge :any) => {
-      this.challenge.parse_object(challenge)
+    this.postsService.getPosts(this.id, this.params).subscribe(result => {
+      this.postsObject = []
+      result.forEach(object => {
+        const element = new PostCustom()
+        if(element.parse_full_object(object)){
+          this.postsObject.push(element)
+        }
+        else{
+          console.error('Invalid parse PostCustom in renderPosts')
+        }
+      })
     })
   }
 
@@ -121,7 +139,11 @@ export class ChallengeDetailsComponent implements OnInit {
   }
 
   dropDownMenu(){
-    this.getChallenge()
+    this.challengeService.getChallenge(this.id).subscribe((challenge) => {
+      if(!this.challenge.parse_full_object(challenge)){
+        console.error('Invalid parse Challenge in dropDownMenu')
+      }
+    })
 
     if(this.dropDown === false){
       this.dropDown = true
@@ -157,8 +179,7 @@ export class SubmitChallenge{
   constructor(private dogService :DogService, private authService :AuthService, private reactionService :ReactionsService, private postsService :PostsService, @Inject(MAT_DIALOG_DATA) public data: {challengeID: string}){}
 
   ngOnInit() :void{
-    this.authService.refreshedIDToken().then(
-      userAccessToken => {
+    this.authService.refreshedIDToken().then( userAccessToken => {
         if(userAccessToken !== undefined){
           this.userAccessToken = userAccessToken
           this.dogService.getDogInfo(this.userAccessToken).subscribe(result => {this.userDogInformation = result})
@@ -195,9 +216,7 @@ export class SubmitChallenge{
 
     if(this.userAccessToken !== ''){
       this.postsService.addPost(this.userAccessToken, challenge).pipe(
-        switchMap(writingTime => {
-          
-        })
+        tap(_ => console.log(_))
       ).subscribe()
     }
 
