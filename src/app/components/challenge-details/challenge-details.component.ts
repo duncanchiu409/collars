@@ -211,7 +211,6 @@ export class SubmitChallenge{
   async sendPost(){
     const post = new Post()
     post.challengeID = this.data.challengeID;
-    post.posterID = this.authService.userData.id;
     post.title = this.postCaption;
 
     if(this.userAccessToken !== ''){

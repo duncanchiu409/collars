@@ -42,10 +42,9 @@ constructor(private angularFirestore :AngularFirestore, private authService :Aut
     )
   }
   
-  addPost(userAccessToken :string, body :any){
+  addPost(userAccessToken :string, body :Post){
     let url = this.url + '/'
-    body['userAccessToken'] = userAccessToken;
-    return this.http.post(url, body).pipe(
+    return this.http.post(url, body, {headers: this.headerOptions, params: {userAccessToken: userAccessToken}}).pipe(
       tap(_ => console.log(_)),
       catchError(this.handleError('Add post'))
     )
