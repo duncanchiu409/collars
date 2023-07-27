@@ -1,9 +1,27 @@
+import { CommentEndToken } from '@angular/compiler/src/ml_parser/tokens';
 import { Comment } from '../classes/Comment'
+
+interface PostInterface{
+  title :string;
+  uid :string;
+  reactions :ReactionInterface[];
+  patCounter :number;
+  challengeID :string;
+  imageURI :string;
+  posterId :string;
+  comments :Comment[];
+  reactionsCounter :{[key :string]: string}
+}
+
+interface ReactionInterface{
+  reactionID :string;
+  userID :string;
+}
 
 export class Post {
   public title: string;
   public uid: string;
-  public reactions: number[];
+  public reactions: ReactionInterface[];
   public patCounter: number;
   public challengeID: string;
   public imageURI: string;
@@ -42,6 +60,12 @@ export class Post {
     else{
       return false
     }
+    if(object.challengeID !== undefined){
+      this.challengeID = object.challengeID
+    }
+    else{
+      return false
+    }
     if(object.imageURI !== undefined){
       this.imageURI = object.imageURI
     }
@@ -73,5 +97,20 @@ export class Post {
       return false
     }
     return true
+  }
+
+  returnSimpleStruct(){
+    let result :PostInterface = {
+      title: this.title,
+      uid: this.uid,
+      reactions: this.reactions,
+      patCounter: this.patCounter,
+      challengeID: this.challengeID,
+      imageURI: this.imageURI,
+      posterId: this.posterID,
+      comments: this.comments,
+      reactionsCounter: this.reactionsCounter
+    }
+    return result;
   }
 }

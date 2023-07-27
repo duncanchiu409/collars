@@ -6,6 +6,8 @@ import { map, forkJoin, switchMap, tap, of } from 'rxjs';
 import { ReactionsService } from 'src/app/shared/services/reactions.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { Comment } from '../../shared/classes/Comment'
+import { CommentCustom } from 'src/app/shared/classes/CommentCustom';
+import { Post2Custom } from '../../shared/classes/Post2Custom'
 
 @Component({
   selector: 'app-post',
@@ -14,9 +16,9 @@ import { Comment } from '../../shared/classes/Comment'
 })
 export class PostComponent implements OnInit {
   public postid :string = '';
-  public post :any = {};
+  public post :Post2Custom;
   public inputComment :string = ''
-  public comments :Comment[] = []
+  public comments :CommentCustom[] = []
   public cursorChange :boolean = true;
   public timer :any;
 
@@ -38,6 +40,7 @@ export class PostComponent implements OnInit {
 
   constructor(private postService :PostService, private route :ActivatedRoute, private commentService :CommentsService, private reactionService :ReactionsService, private render :Renderer2, private router :Router, private authService :AuthService) {
     this.limit = 5;
+    this.post = new Post2Custom();
   }
 
   ngOnInit(): void {
@@ -51,8 +54,13 @@ export class PostComponent implements OnInit {
             return this.postService.getPost(postid['id'], params)
           })
         ).subscribe( post => {
-          console.log(post)
-          this.post = post
+          let element = new Post2Custom();
+          if(element.parse_full_object(post)){
+            this.post = element;
+          }
+          else{
+            console.error('Invalid parse Post2Custom in ngOnInit')
+          }
           this.matchReactions()
         })
         this.loadMoreComments()
@@ -155,11 +163,11 @@ export class PostComponent implements OnInit {
   loadMoreComments(){
     let params = {offset: this.comments.length , limit: this.limit}
     this.commentService.getLimitedComments(this.postid, params).subscribe((comments) => {
-      console.log(comments)
       comments.forEach((comment :any) => {
-        let element = new Comment()
-        element.parse_full_object(comment)
-        this.comments.push(element)
+        let element = new CommentCustom()
+        if(element.parse_full_object(comment)){
+          this.comments.push(element)
+        }
       })
     })
   }

@@ -20,6 +20,7 @@ import { DogService } from 'src/app/shared/services/dog.service';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { getDownloadURL, getStorage, ref, uploadString } from 'firebase/storage';
 import { PostCustom } from '../../shared/classes/PostCustom'
+import { Dog } from '../../shared/classes/Dog'
 
 @Component({
   selector: 'app-challenge-details',
@@ -168,21 +169,25 @@ export class ChallengeDetailsComponent implements OnInit {
 })
 
 export class SubmitChallenge{
-  public image :File | null = null;
-  public imageDataURL :any = '';
+  public imageDataURL :string = '';
   public userAccessToken :string = ''
-  public userDogInformation :any
+  public userDogInformation :Dog;
   public postImageRef :any;
   public postRef :any;
   public postCaption :string = '';
 
-  constructor(private dogService :DogService, private authService :AuthService, private reactionService :ReactionsService, private postsService :PostsService, @Inject(MAT_DIALOG_DATA) public data: {challengeID: string}){}
+  constructor(private dogService :DogService, private authService :AuthService, private reactionService :ReactionsService, private postsService :PostsService, @Inject(MAT_DIALOG_DATA) public data: {challengeID: string}){
+    this.userDogInformation = new Dog()
+  }
 
   ngOnInit() :void{
     this.authService.refreshedIDToken().then( userAccessToken => {
         if(userAccessToken !== undefined){
           this.userAccessToken = userAccessToken
-          this.dogService.getDogInfo(this.userAccessToken).subscribe(result => {this.userDogInformation = result})
+          this.dogService.getDogInfo(this.userAccessToken).subscribe(result => {
+            let element = new Dog()
+            element.parse_full_object(result)
+            this.userDogInformation = element})
         }
         else{
           throw Error;
@@ -196,69 +201,24 @@ export class SubmitChallenge{
       const reader = new FileReader()
       reader.readAsDataURL(e.target.files[0])
       reader.onload = () => {
-        this.imageDataURL = reader.result
+        if(typeof reader.result === 'string'){
+          this.imageDataURL = reader.result
+        }
       }
     }
   }
 
   async sendPost(){
-    const challenge = {
-      challengeID: this.data.challengeID,
-      comments: [],
-      imageURI: '',
-      patCounter: 0,
-      posterID: this.authService.userData.uid,
-      reactions: [],
-      title: this.postCaption,
-      reactionsCounter: {},
-      uid: '',
-    }
+    const post = new Post()
+    post.challengeID = this.data.challengeID;
+    post.posterID = this.authService.userData.id;
+    post.title = this.postCaption;
 
     if(this.userAccessToken !== ''){
-      this.postsService.addPost(this.userAccessToken, challenge).pipe(
+      this.postsService.addPost(this.userAccessToken, post).pipe(
         tap(_ => console.log(_))
       ).subscribe()
     }
-
-    // try{
-    //   this.postRef = await addDoc(collection(getFirestore(), 'posts'), challenge)
-
-    //   let postImagePath = `posts/${this.postRef.id}`
-    //   this.postImageRef = ref(getStorage(), postImagePath)
-
-    //   if(this.imageDataURL !== null){
-    //     try{
-    //       await uploadString(this.postImageRef, this.imageDataURL, 'data_url');
-    //     }
-    //     catch(err){
-    //       console.log(err)
-    //     }
-    //   }
-    //   else{
-    //     throw Error('POST post image failed: Failed to submit ImageRef')
-    //   }
-
-
-    // }
-    // catch(err){
-    //   console.log(err)
-    // }
-
-    // this.reactionService.getReactions().subscribe(async (reactionsObjects) => {
-    //   let downloadURI = ''
-    //   downloadURI = await getDownloadURL(this.postImageRef)
-
-    //   const reactionsCounter :{[key :string] :Number} = {}
-    //   reactionsObjects.forEach((reaction :any) => {
-    //     reactionsCounter[reaction.uid] = 0;
-    //   })
-
-    //   let snapshot = await setDoc(this.postRef, {
-    //     uid: this.postRef.id,
-    //     imageURI: downloadURI,
-    //     reactionsCounter: reactionsCounter,
-    //   }, {merge: true})
-    // })
   }
 
   changeTextArea(e :any){
